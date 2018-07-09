@@ -1,4 +1,4 @@
-###### 0704  traitlets
+##### 0704  traitlets， huban安装， 测试
 
 具有类型检查和动态计算的默认值的属性（特征）
 
@@ -82,7 +82,7 @@ c.Spawner.notebook_dir = '~/notebooks'
 
 增加用户默认notebook开启路径
 
-###### 0705
+##### 0705 API  lab-hub安装，白名单，管理员
 
 开启jupyterhub .页面 点击生成token API 令牌。复制API令牌，在配置文件jupyterhub_config.py 中，填写此项，格式为 c.JupyterHub.services({'name': 'users', 'api_token': 'sdflbvjkhgf...'}),重启服务。
 
@@ -130,7 +130,7 @@ Spawner failed to start [status=1]. The logs for sunxr may contain details.
 Spawner.cmd 中注释'jupyterhub-singleuser',此项。
 ```
 
-###### 0706
+##### 0706
 
 创建一个将运行hub的用户；
 
@@ -186,7 +186,7 @@ sudo chown users /etc/jupyterhub
 
 cd /etc/jupyterhub
 
-sudo -u users /jupyterhub --JupyterHub.spawner_class=sudospawner.SudoSpawner
+sudo -u users  jupyterhub --JupyterHub.spawner_class=sudospawner.SudoSpawner
 
 
 
@@ -194,7 +194,7 @@ sudo -u users /jupyterhub --JupyterHub.spawner_class=sudospawner.SudoSpawner
 
 sudo : jupyterhub: command not found (没装进去)
 
-`运行sudo -H(注意点) pip install jupyterhub notebooksudospawner configurable-http-proxy` 
+`运行sudo -H(注意) pip install jupyterhub notebook sudospawner configurable-http-proxy` 
 
 重复以上步骤再次启动。
 
@@ -202,5 +202,114 @@ Failed to start your server on the last attempt. Please contact admin if the iss
 
 报错日志中出现`Failed to open PAM session for qwe: [PAM Error 14] Cannot make/remove an entry for the specified session` `Disabling PAM sessions from now on`
 
+##### 0709
 
+上星期的bug  无法使用外网访问，今天启动之后就好了， 可能是启动位置的问题。
+
+再继续解决 500 Internal Server Error.
+
+ Faild to start your server. Please contact admin if the issue persits.
+
+配置文件中的spawner_class 修改为sudospawner.SudoSpawner. 默认账户能登陆了，使用sudo创建的账号还是不行。
+
+ 1， 修改`c.PAMAuthenticator.open_sessions =  False`  无效,还是同样的错误。
+
+ 2， 修改/etc/sudoers 在JUPYTER_USERS 变量中增加用户名，失败。
+
+ 3， 修改/etc/sudoers 在user  ALL=(JUPYTER_USERS)  NOPASSWD:JUPYTERCMD 中替换为组：users ALL=(%jupyterhub) NOPASSWD:JUPYTERH_CMD. 修改用户组， sudo adduser -G jupyterhub  GROUP_NAME.
+
+失败，但是日志中出现No such file or directory信息， 在home目录下没有用户目录....
+
+ 4, 创建用户主目录，成功。修改为组登陆， 将用户添加至组，也可以了。
+
+总体：大概方向，1）配置文件中的单用户设置，spawner设置，whitelist设置等。2）sudo 运行用户的设置，安装的问题，组的修改。3）启动位置。 
+
+
+
+安装jupytehub-systemdspawner 
+
+sudo -H pip3 install jupyterhub-systemdspawner
+
+修改配置文件中的JupyterHub.spawner_class 为systemdspawner.SystemdSpawner， 增加配置即可，
+
+启动之后有个点很恶心， 每次登陆后台也要输入密码，不知道是不是因为配置没弄好的问题。
+
+
+
+###### ubuntu .bashrc文件恢复默认。
+
+cp /etc/skel/.bashrc ~ 
+
+立即生效：source .bashrc
+
+###### anacodna 环境变量
+
+~ /anaconda3/bin为.Sh所在home目录路径
+
+在终端输入：sudo gedit ~/.bashrc
+
+打开注册表后，在注册表中加入：
+exportPATH=~/anaconda3/bin:$PATH
+
+立即生效，输入：source ~/.bashrc
+
+
+
+安装docker `sudo apt install docker.io`
+
+升级codna `conda update conda`
+
+出现权限不足， 设定权限，anaconda 安装文件权限`sudo chmod -R 777 /anaconda3(根据路径定)
+
+升级jupyter `conda update jupyter`
+
+升级lab `conda update jupyterlab`
+
+安装jupyterhub `conda install -c conda-forge jupyterhub`
+
+`sudo apt update`
+
+`sudo apt upgrade`
+
+安装google chrome
+
+sudo wget http://www.linuxidc.com/files/repo/google-chrome.list -P /etc/apt/sources.list.d/
+
+导入google 软件公钥，`wget -q -o -https://dl.google.com/linux/linux_signing_key.pub  | sudo apt-key add -
+
+更新系统 sudo apt update
+
+安装chrome `sudo apt-get install google-chrome-stable`
+
+Google chrome 代理 proxy switchyOmega 
+
+https://github.com/FelisCatus/Switchyomega/releases 下载之后在chrome extensions 中安装。
+
+SwitchOega-Chromium.2.5.15.crx版.
+
+
+
+###### conda 安装jupyterhubbug
+
+`Spawner failed to start [status=1]. The logs for sunxr may contain details`
+
+tornado 版本问题， 降级。
+
+降级之后又出现了500 ，想死了...
+
+修改 `c.PAMAuthenticator.open_sessions =  False`换bug了....日志内容变了，页面显示没变，
+
+
+
+
+
+看岔了，需要集群为基础。
+
+###### kubernetes 设置helm(盔)
+
+[Helm](https://helm.sh/)是Kubernetes的软件包管理器，是在Kubernetes集群上安装，升级和管理应用程序的有用工具 .
+
+安装：`curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash`
+
+初始化
 
