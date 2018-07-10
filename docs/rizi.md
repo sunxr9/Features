@@ -104,7 +104,7 @@ jupyterhub 源码
 
 jupyterlab-hub安装;
 
-前提：npm， jupyterlab, jupyterhub 
+前提：npm， jupyterlab,  jupyterhub 
 
 执行jupyter labextension install @jupyterlab/hub-extension
 
@@ -176,7 +176,7 @@ sudo chmod g+r /etc/shadow
 
 sudo usermod -a -G shadow users
 
-创建存储库 
+创建存储库 （目录）
 
 sudo mkdir /etc/jupyterhub
 
@@ -289,7 +289,7 @@ SwitchOega-Chromium.2.5.15.crx版.
 
 
 
-###### conda 安装jupyterhubbug
+###### conda 安装jupyterhub-bug
 
 `Spawner failed to start [status=1]. The logs for sunxr may contain details`
 
@@ -298,6 +298,53 @@ tornado 版本问题， 降级。
 降级之后又出现了500 ，想死了...
 
 修改 `c.PAMAuthenticator.open_sessions =  False`换bug了....日志内容变了，页面显示没变，
+
+##### 0710
+
+jupytehub 0.9.0版本 是个分界线， 以上可以使用最新版tornado ,以下的只能使用4.5.3，不可使用5.0以上的，
+
+tornado 版本不对报错日志： AttributeError: type object 'IOLoop ' has no attribute 'initialized'
+
+
+
+换思路， 修改配置文件不行，自动生成的cookie split文件删除在启动也不行，
+
+###### conda 创建虚拟环境
+
+conda create -n hub_env python=3.6.5
+
+激活虚拟环境 source hub_env 
+
+安装jupyter:  conda install jupyter
+
+安装hub : conda install -c conda-forge jupyterhub
+
+测试安装 输入jupyter  然后tab键两次， 
+
+不启动直接生成配置文件，jupytehub --generate-config 
+
+修改ip, 端口号port,  PAMAuthenticator.open_... =False,只有这三样，使用配置文件启动
+
+
+
+测试1，本地可以登陆， 退出，使用远程访问， 成功访问没有出现500错误，退出。
+
+测试2，本地登陆， 终止程序，再次启动，远程访问 也成了...两台在线....., 
+
+测试3，不是使用root用户启动，不配置白名单登陆失败。停止程序，增加白名单， 还是只能启动用户登陆。
+
+停止。 500 错误， 描述不出来了， 换个虚拟环境一切都好了，总的感觉应该是cookie认证的问题，测试登陆注意要退出，有可能是没退出的次数多了，就认证不上了。
+
+
+
+
+
+安装jupyterlab-hub 
+
+```shell
+# conda 的环境 中间有个杠
+jupyter-labextension install @jupyterlab/hub-extension
+```
 
 
 
