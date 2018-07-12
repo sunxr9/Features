@@ -337,7 +337,7 @@ conda create -n hub_env python=3.6.5
 
 
 
-
+##### 0711 conda lab-hub
 
 安装jupyterlab-hub 
 
@@ -346,7 +346,61 @@ conda create -n hub_env python=3.6.5
 jupyter-labextension install @jupyterlab/hub-extension
 ```
 
+修改配置文件：1）c.Spqwner.environment = {‘JUPYTER_ENABLE_LAB’: 'yes'},
 
+c.Spawner.cmd = ['jupyter-labhub']注意中间的小杠。
+
+c.Spawner.default = '/lab',目前无关紧要。
+
+###### ubuntu RAID5  
+
+开机 使用ctrl + A 进入RAID页面， 重做raid 首先初始化，会将所有信息清除， 
+
+初始化： initialization 开头的选项，enter 进入，使用insert 按键选中需要初始化的磁盘， 再次回车选中进行初始化， 弹出警告框， 进行确认。
+
+初始化完成之后， 在初始化磁盘选项选择创建选项 create ，使用insert 选中需要raid的磁盘，选中之后就回车，进入选择页面， 选择RAID规则， 四块固态使用RAID5，以及可以手动选择磁盘大小，读写等，完成进行enter 确认。 之后退出重启。
+
+##### ubuntu service install
+
+插入引导U盘，开机使用 F11进入boot界面， 选择语言， 键盘布局， 网路配置需要联网。暂停。
+
+
+
+
+
+##### 0712
+
+前端需求：
+
+掌握各种Web前端技术，HTML/CSS/JavaScript/Ajax。
+
+了解或有意向学习前端技术：Angnlar,  TypeScript等。
+
+对数据分析有一定了解, jupyter 。
+
+会使用git或svn， 了解B/S架构的系统。
+
+
+
+安装docker spawner 
+
+pip install sockerspawner
+
+修改配置文件：c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+
+失败： 出现一次没有jupyterhub/signleuser docker镜像。拉去即可以了。
+
+docker search jupyterhub/signleuser 搜索镜像，
+
+docker pull jupyterhub/signleuser 拉取镜像
+
+！！！！重点来了， 又出500， 同样的bug显示，不同的原因， 很坑，一天没整好。
+
+1， 增加配置文件中DockerSpawner.hub_ip_connect = ‘容器ip’ 失败。
+
+2， 增加配置JupyterHub.hub_ip = '容器ip'， 无效。
+
+3， 增加配置DockerSpawner.container_image = '容器名/tag', 无效。
 
 
 
