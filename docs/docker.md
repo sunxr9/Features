@@ -102,3 +102,79 @@ docker run -it --name mydocker -h hostname -v /opt:/opt docker指定宿主机和
 docker run -it --name mydocker2 --volumes-from mydocker1 docker
 
 容器之间的共享数据。
+
+
+
+自定制docker container 
+
+docker run --name centos-test -it centos
+
+安装配置
+
+yum install wget gcc gcc-c++ make openssl-devel
+
+pcre nginx 安装依赖。
+
+使用wget 下载nginx压缩包。
+
+tar zxf 解压下载文件
+
+useradd -s /usr/nologin -M www
+
+
+
+将容器做镜像。
+
+docker commit -m '注释' 容器id 镜像名称(例 sunxr/my-容器名称：v1（版本）)
+
+返回值为hash值。
+
+
+
+DockerFile创建
+
+创建docker-file 目录
+
+创建Dockerfile 文件 注意D为大写。
+
+```shell
+# This is My first Dockerfile
+# 第一步 告诉使用什么镜像 
+FROM centos # 镜像名称，基础镜像
+# 第二步
+# maintainer 维护者信息
+随便写
+
+# 第三步 需要往容器中添加的文件。。
+# ADD（压缩文件会自动解压）文件需和dockerfile 同级目录
+ADD 文件名称， 存放文件路径
+
+# 第四部
+# run 告诉容器做点什么
+RUN yum install -y wget gcc gcc-c++ make..
+RUN useradd -s /sbin/
+
+# 第五步 工作目录， 执行命令目录
+#work dir 
+WORKDIR /usr/local/src
+RUN 需要执行命令
+
+# 环境命令
+ENV PATH /usr/local/nginx/sbin：$PATH
+# 第六步
+# EXPORT 映射端口
+EXPORT 80
+
+# CMD 执行的命令（）
+CMD ['nginx']
+```
+
+完成之后执行 docker build -t nginx-file:v1 /opt/docker-file/nginx/
+
+-t 为标签，或者可以理解为名称， 后问dockerfile 文件路径，（nginx为实例名称）
+
+
+
+docker 资源隔离 LXC Kernel namespace 
+
+`Pid、Net、Ipc、Mnt、Uts（容器自己名字）、User（）`
