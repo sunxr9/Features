@@ -404,6 +404,44 @@ docker pull jupyterhub/signleuser 拉取镜像
 
 
 
+
+
+##### 0713
+
+[jupyterhub-deploy-docekr](https://github.com/jupyterhub/jupyterhub-deploy-docker)
+
+连接数据库。
+
+1, 在notebook 中引入导入数据库中数据，安装pymysql。pip install pymysql
+
+notebook 导入pandas pymysql
+
+设置数据库连接信息，pymysql.connect(host, user, passwd, db, port, charset)
+
+写入语句  sql = xxx
+
+执行连接 使用pandas。read_sql （sql语句，conn连接信息）
+
+详情查看 桌面 / 乱的/ untitled.ipynb 文件
+
+
+
+```
+# docker测试。
+# docker inspect --format "{{.State.Pid}}" jupyterhub 查看容器id
+# 进入docker 容器
+sudo nsenter --target '9911' --mount --uts --ipc --net --pid
+# 查找到jupyterhub 启动文件。 生成配置文件，修改配置文件，
+# 退出容器,执行命令
+docker run -p 8000:8000 --name jupytehub -it jupyterhub/jupyterhub jupyterhub --config=/srv/jupyterhub/jupyterhub_config.py
+# 然后容器内部执行 jupytehub 加载配置文件
+docker 可以远程访问了。
+```
+
+
+
+
+
 看岔了，需要集群为基础。
 
 ###### kubernetes 设置helm(盔)

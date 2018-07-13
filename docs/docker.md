@@ -123,7 +123,7 @@ useradd -s /usr/nologin -M www
 
 
 
-将容器做镜像。
+### 将容器做镜像。
 
 docker commit -m '注释' 容器id 镜像名称(例 sunxr/my-容器名称：v1（版本）)
 
