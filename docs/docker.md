@@ -231,3 +231,74 @@ docker push xxx/xxx/xx:v1 推送至仓库，如果报错：
 **修改、/etc/sysconfig/docker文件，在other_args 中增加--insecure-registry 需要推送的ip和端口，如上 例，在 -H tcp://0.0.0.0:端口（235）,原有的前面增加。**
 
  增加之后执行、/etc/inti.d/docker restart
+
+
+
+docker 的启动配置、/etc/default/docker
+
+docker 的远程访问：
+
+1，第二台安装docker 的服务器
+
+2，修改Docker守护进程启动选项，区别服务器。【label】
+
+3，保证ClientAPI于ServerAPI版本一直使用docker info 查看
+
+在新的docker 中修改配置/etc/default/docker 
+
+增加 DOCKER_OPTS = ‘LABEL name=docker_server_2’自定义，只是为了区分
+
+ 修改服务气端配置：
+
+-H :配置docker 守护进程的服务端的socket，支持tcp://host:port, unix://path/to/socket， fd://*   or  fd://socketfd
+
+在DOCKER_OPTS 中增加 -H项 在原有的后面增加，使用空格隔开 `-H tcp://0.0.0.0:2375`保存退出重启。
+
+使用ps -ef | grep docker 查看配置是否生效。之后就可以在远程使用ip地址和端口远程访问，例 ：curl http://192.168.3.181:2375/info 
+
+
+
+修改客户端配置：-H 于服务器端一直，使用socket访问。
+
+例：docker -H tcp://192.168.181:2375 info 结果与上例相同，
+
+简化客户端访问，使用环境变量。DOCKER_HOST
+
+例： export DOCKER_HOST='tcp://192.168.3.181:2375'
+
+之后直接使用docker info 命令，就可以了。默认使用链接环境变量的ip，不使用置空就可以了，export DOCKER_HOST=‘’
+
+在设置了远程访问之后不可以本地访问，可以在配置文件中增加本地socket连接，支持多个选项配置，只需要在原有的后面增加就可以， 本地的为 -H unix:///var/run/docker.sock' 
+
+**同一配置可以使用多次**
+
+ 
+
+linux 虚拟网桥的特点：1）可以设置IP地址。2）相当于一个隐藏的虚拟网卡。
+
+
+
+**网桥管理工具 bridge-utils， 使用apt-get安装**
+
+使用sudo brctl show 查看网桥设备。
+
+
+
+修改docker0 : sudo ifconfig docker0 192.168.200.1 netmask 255.255.255.0
+
+自定义虚拟网桥：
+
+1， 添加虚拟网桥
+
+​	sudo bratl addbr br0 添加网桥
+
+​	sudo ifconfig br0 192.168.111.1 netmask 255.255.255.0设置网桥ip地址，子网掩码。
+
+2，更改docker守护进程的启动配置：
+
+​	/etc/default/docker 中添加 DOCKER_OPTS值
+
+​	DOCKER_OPTS = “ -b = br0”
+
+
+
