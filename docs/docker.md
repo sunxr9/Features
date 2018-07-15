@@ -175,6 +175,59 @@ CMD ['nginx']
 
 
 
-docker 资源隔离 LXC Kernel namespace 
+docker 资源隔离 LXC 
 
-`Pid、Net、Ipc、Mnt、Uts（容器自己名字）、User（）`
+Kernel namespace 使用命名空间 
+
+`Pid(容器，容器还可以嵌套)、Net(网络的隔离)、Ipc(进程)、Mnt(挂载)、Uts（容器自己名字）、User（不同的用户组）`
+
+资源限制（配额）：cgroup 都在linux内核中
+
+默认支持CUP，内存 （磁盘是不可以，需要手动）
+
+`linux 压力测试工具`安装： yum(apt) install -y stress
+
+参数：
+
+1. -c 测试CPU ，创建N个进程，一直到崩溃。
+2. -m 测试内存， 一直请求内存，知道不够
+
+使用 -c 指定cpu配额： docker run -it --rm -c 512 stress --cpu 1
+
+stress --cpu 为指定测试cpu的数量，一个cpu就制定为一个。**注意不重要在物理机测试**
+
+**默认docker 配置为1024，表示为100%，在只有一个容器存在的情况，docker会自动根据宿主机的容器数量配额，例：在有两个容器运行的情况，都是默认值1024，但是每个容器只会使用50%的配额**
+
+`cat /proc/cpuinfo 查看cpu核心`
+
+--rm 再启动容器的使用指定此参数用于测试，运行完成之后就会自动删除。
+
+--cpuset-cpus= 指定分配cpu（数量应该是） 
+
+CPU：docker run -it --rm --cpuset-cpus=0,1 stress --cpu 1（0, 1的意思为多核心的情况分配0,1,第0个和第一个cpu。）
+
+内存： docker run -it --rm -m 128M stress --vm 1 --vm-bytes 128M --vm-bang 0
+
+分配运行内存 128M  使用测试工具测试内存128M，新版设定128M,只能跑到128M，老版为两倍才会崩溃。
+
+**docker 默认使用桥接模式（bridge）**
+
+ brctl show 查看容器的网桥。
+
+iptables -t nat -L -n 查看端口转发。
+
+Docker-compose fig 多个构建，没了解。
+
+
+
+**docker pull registry 私有容器**
+
+docker tag elasticsearch xxx/xxx/xx:v1 打包一个容器
+
+例： 192.168.3.123:5000
+
+docker push xxx/xxx/xx:v1 推送至仓库，如果报错：
+
+**修改、/etc/sysconfig/docker文件，在other_args 中增加--insecure-registry 需要推送的ip和端口，如上 例，在 -H tcp://0.0.0.0:端口（235）,原有的前面增加。**
+
+ 增加之后执行、/etc/inti.d/docker restart
