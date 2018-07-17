@@ -504,7 +504,89 @@ Spawner failed to start [status=ExitCode=1, Error='', FinishedAt=2018-07-16T09:1
 
 
 
+##### 0716
 
+
+
+**防火墙操作**
+
+```
+sudo ufw status
+一般用户，只需如下设置：
+sudo apt-get install ufw
+sudo ufw enable
+sudo ufw default deny
+开启/关闭防火墙 (默认设置是’disable’)
+sudo ufw enable|disable
+
+UFW 使用范例：
+允许 53 端口
+$ sudo ufw allow 53
+禁用 53 端口
+$ sudo ufw delete allow 53
+允许 80 端口
+$ sudo ufw allow 80/tcp
+禁用 80 端口
+$ sudo ufw delete allow 80/tcp
+允许 smtp 端口
+$ sudo ufw allow smtp
+删除 smtp 端口的许可
+$ sudo ufw delete allow smtp
+允许某特定 IP
+$ sudo ufw allow from 192.168.254.254
+删除上面的规则
+$ sudo ufw delete allow from 192.168.254.254
+
+ufw enable/disable:打开/关闭ufw
+ufw status：查看已经定义的ufw规则
+ufw default allow/deny:外来访问默认允许/拒绝
+ufw allow/deny 20：允许/拒绝 访问20端口,20后可跟/tcp或/udp，表示tcp或udp封包。
+ufw allow/deny servicename:ufw从/etc/services中找到对应service的端口，进行过滤。
+ufw allow proto tcp from 10.0.1.0/10 to 本机ip port 25:允许自10.0.1.0/10的tcp封包访问本机的25端口。
+ufw delete allow/deny 20:删除以前定义的"允许/拒绝访问20端口"的规则
+```
+
+**ubuntu 开启远程访问22 端口 sudo ufw allow 22**
+
+iptables 操作，出现需要升级kernl核心，的提示是需要使用sudo。
+
+```
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
+
+#关闭所有端口
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+#开启80端口，HTTP服务
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT
+
+#开启3306端口，MYSQL服务
+iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 3306 -j ACCEPT
+
+#开启53端口，DNS服务
+iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+iptables -A INPUT -p udp --sport 53 -j ACCEPT
+iptables -A INPUT -p udp --dport 53 -j ACCEPT
+iptables -A OUTPUT -p udp --sport 53 -j ACCEPT
+
+#开启20，21端口，FTP服务
+iptables -A INPUT -p tcp --dport 21 -j ACCEPT
+iptables -A INPUT -p tcp --dport 20 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 21 -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 20 -j ACCEPT
+```
+
+
+
+
+
+https://github.com/jupyter/docker-stacks/issues/242
+
+https://github.com/jupyter/docker-stacks/issues/408， jovyan用户使用
 
 看岔了，需要集群为基础。
 
