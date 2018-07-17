@@ -438,6 +438,70 @@ docker run -p 8000:8000 --name jupytehub -it jupyterhub/jupyterhub jupyterhub --
 docker 可以远程访问了。
 ```
 
+##### 0716
+
+测试docker 访问：启动命令
+
+docker run -it -p 80:8000 --rm --name jupyterhub -v  /etc/jupyterhub_config.py:/etc/jupyterhub_config.py jupyterhub/singleuser jupyterhub --config='/etc/jupyterhub/jupyterhub_config.py'
+
+可以访问， 但是账户密码，不知道怎么使用。
+
+1， 使用物理机账户登陆验证失败，
+
+2， 使用容器自带的jovyan账户验证失败， 默认没有密码，还给创建了。
+
+3， 创建用户 ts， 退出容器，重新启动，再次验证无效。
+
+
+
+换：不再docker 内部修改配置，使用物理机中的jupyterhub 测试：
+
+1， 出现no such image : jupyterhub/singleuser:0.9, 页面还是500错误。
+
+​	修改组，将rhea用户添加至docker组中，重启，登陆，无效，还是一样。
+
+2， 在配置文件中修改JupyterHub.hub_ip = 'localhost',无效， 未注释。
+
+3， 修改Spawner.cmd = [jupyterhub/singleuser]，取消注释，重启，还是找不到镜像，
+
+日志中为404连接不到镜像，页面为500.
+
+！！！！！
+
+4，  被逼无奈了， 重新拉取了一个jupyterhub/singleuser镜像，只不过在后面加上了：0.9
+
+为：docker pull jupyterhub/singleuser:0.9, 重启，登陆，换故障了，
+
+```Html
+500 : Internal Server Error
+
+The error was:
+
+Failed to connect to Hub API at 'http://localhost:8081/hub/api'.  Is the Hub accessible at this URL (from host: 52fa1ba2ac50)?
+
+```
+
+更改JupyterHub.hub_ip = 'docker0  IP'， JupyterHub.Hub_port = '8081'
+
+重启，出现403错误。再次重启还是500， 退出当前用户，更换用户登陆，出现
+
+```
+500 : Internal Server Error
+Spawner failed to start [status=ExitCode=1, Error='', FinishedAt=2018-07-16T09:13:55.210656103Z]. The logs for qwe may contain details.
+```
+
+错误。
+
+```shell
+# 增加以下选项，失败，
+259 # import os
+260 # network_name = os.environ['DOCKER_NETWORK_NAME']
+261 # c.DockerSpawner.use_internal_ip = True
+262 # c.DockerSpawner.network_name = network_name
+263 # c.DockerSpawner.extra_host_config = {'network_mode': network_name}
+264 # c.DockerSpawner.extra_start_kwargs = {'network_mode': network_name}
+```
+
 
 
 ##### 0716
