@@ -524,6 +524,18 @@ https://github.com/jupyter/docker-stacks/issues/242
 
 https://github.com/jupyter/docker-stacks/issues/408， jovyan用户使用
 
+
+
+
+
+https://www.howtoing.com/virtualbox_ubuntu/ # 安装 VirtualBox 
+
+https://www.linuxidc.com/Linux/2015-10/123788.htm # 安装KVM 
+
+http://www.mintos.org/skill/virtualbox-xp.html
+
+https://blog.csdn.net/u012732259/article/details/70172704 csdn
+
 看岔了，需要集群为基础。
 
 ###### kubernetes 设置helm(盔)
