@@ -608,7 +608,7 @@ ubuntu 挂载 mount /dev/需要挂载的硬盘   /挂载路径
 
 vmci是一个宿主机和虚拟机之间的交换层，可以帮助虚拟机更快地调用硬件资源，但是win10对其支持不完善，个别机器会报错，vmci0.present=‘FALSE’是将这个组件禁用了，并不影响虚拟机的正常运行。
 
- 
+ 卸载挂载：sudo umount /dev/sdb
 
 
 
@@ -636,6 +636,112 @@ https://www.linuxidc.com/Linux/2015-10/123788.htm # 安装KVM
 http://www.mintos.org/skill/virtualbox-xp.html
 
 https://blog.csdn.net/u012732259/article/details/70172704 csdn
+
+失败！
+
+
+
+##### 0718
+
+服务器安装VirtualBox 。
+
+sudo apt install virtualbox # 需要root或sudo权限。
+
+使用virtualbox 测试安装是否成功， 现以下为安装成功，但是没有检测到显示器：
+
+```
+Qt WARNING: QStandardPaths: XDG_RUNTIME_DIR not set, defaulting to '/tmp/runtime-root'
+Qt WARNING: QXcbConnection: Could not connect to display 
+Qt CRITICAL: Could not connect to any X display.
+
+```
+
+使用VirtualBox 安装虚拟机：
+
+https://blog.csdn.net/sinat_19259775/article/details/77520472
+
+1，创建虚拟机：
+
+​	VBoxManage createvm --name '虚拟机名字' --ostype ubuntu_64 --register 
+
+​	指定--ostype参数，可以为新的虚拟机使用默认参数，可以使用VBoxmanage list ostypes 查看支持的操作系统。
+
+2， 为虚拟机制定设置信息：
+
+​	VBoxManage modifyvm '虚拟机名字' --memory 256 --acpi on --boot1 dvd --nic1 nat
+
+3， 为虚拟机创建虚拟磁盘：十进制（20G， 20000）
+
+​	VBoxManage createhd --filename "虚拟机名字.vdi" --size 20000
+
+4， 为虚拟机添加IDE控制器：
+
+​	VBoxManage storagectl "虚拟机名字" --name "IDE Controller" --add ide --controller PIIX4
+
+5，将第三部中创建的虚拟硬盘添加虚拟机：
+
+​	VBoxManage storageattach "虚拟机名字" --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium "虚拟机名字.vdi"
+
+6， 将虚拟机安装的操作系统iso文件添加到虚拟机
+
+​	VBoxManage storageattach "虚拟机名字" --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium /full/path/to/iso.iso
+
+7，启动虚拟机：
+
+​	VBoxManage startvm "虚拟机名字" --type headless
+
+
+
+**关机虚拟机： VBoxManage controlvm "虚拟机名称" poweroff**
+
+删除虚拟机 VBoxManage unregistervm --delete "虚拟机名字 | UUID"，使用VBoxManage list vms 查看UUID。
+
+**VBoxManage 命令行详解**
+
+https://www.cnblogs.com/pbss/articles/1987361.html
+
+
+
+
+
+
+
+
+
+
+
+**服务器安装KVM**
+
+```shell
+# 依赖包
+sudo apt-get install qemu-kvm libvirt-bin virtinst bridge-utils cpu-checker
+```
+
+所有的虚拟机文件和其他相关文件都存放在/var/lib/libvirt/中。 iso映像的默认路径是/var/lib/libvirt/boot/中。
+
+下载镜像： 
+
+
+
+创建虚拟机： 
+
+```shell
+sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm --disk path = / var / lib / libvirt / images / ubuntu-16.04-vm1，size = 8 --cdrom /var/lib/libvirt/boot/ubuntu-16.04-server-amd64.iso --graphics vnc
+--name：此选项定义虚拟名称的名称。在我们的例子中，VM的名称是Ubuntu-16.04。
+--ram = 512：为VM分配512MB RAM。
+--vcpus = 1：表示VM中的CPU核心数。
+--cpu host：通过将主机的CPU配置暴露给guest虚拟机来优化VM的CPU属性。
+--hvm：请求完整的硬件虚拟化。
+--disk path：保存VM的硬盘的位置及其大小。在我们的示例中，我已经分配了8GB的硬盘大小。
+--cdrom：安装程序ISO映像的位置。请注意，您必须在此位置拥有实际的ISO映像。
+--graphics vnc：允许VNC从远程客户端访问VM。
+```
+
+
+
+
+
+
 
 
 
