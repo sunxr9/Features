@@ -616,7 +616,7 @@ vmci是一个宿主机和虚拟机之间的交换层，可以帮助虚拟机更�
 
 sudo apt install cpu-checker 
 
-sudo c
+sudo kvm-on
 
 
 
@@ -628,9 +628,7 @@ https://github.com/jupyter/docker-stacks/issues/408， jovyan用户使用
 
 
 
-<<<<<<< HEAD
 
-=======
 https://www.howtoing.com/virtualbox_ubuntu/ # 安装 VirtualBox 
 
 https://www.linuxidc.com/Linux/2015-10/123788.htm # 安装KVM 
@@ -638,7 +636,8 @@ https://www.linuxidc.com/Linux/2015-10/123788.htm # 安装KVM
 http://www.mintos.org/skill/virtualbox-xp.html
 
 https://blog.csdn.net/u012732259/article/details/70172704 csdn
->>>>>>> 3c13f7c95f09fee536bdfdbc52b175866b2a30a7
+
+
 
 看岔了，需要集群为基础。
 
