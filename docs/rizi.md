@@ -582,11 +582,53 @@ iptables -A OUTPUT -p tcp --sport 20 -j ACCEPT
 
 
 
+##### 0717
+
+安装服务器。
+
+服务器：192.168.3.172
+
+虚拟机服务器： 192.168.3.210
+
+ubuntu desktop虚拟机： 192.168.3.181
+
+在df -l 没有看见需要挂载的硬盘的时候使用下面命令。
+
+fdisk -l 查看硬盘信息
+
+ubuntu 挂载 mount /dev/需要挂载的硬盘   /挂载路径
+
+在VMware进行完虚拟机安装向导之后，刚要开启虚拟机进行操作系统的安装时，会出现“无法获得VMCI驱动程序的版本：句柄无效”的错误提示 
+
+ 1、打开虚拟机主界面，选择未能成功安装的虚拟机，在界面下方找到“配置文件”所示配置文件的路径（图 2） 
+
+ 2、找到步骤1的配置文件后，点击右键“以记事本方式打开”(本人使用notepad++，原理相同) 
+
+ 3、查找到 vmci0.present="TRUE" 代码（如图4），将TURE更改为FALSE，保存即可。 
+
+vmci是一个宿主机和虚拟机之间的交换层，可以帮助虚拟机更快地调用硬件资源，但是win10对其支持不完善，个别机器会报错，vmci0.present=‘FALSE’是将这个组件禁用了，并不影响虚拟机的正常运行。
+
+ 
+
+
+
+**ubuntu server install kvm**
+
+sudo apt install cpu-checker 
+
+sudo c
+
 
 
 https://github.com/jupyter/docker-stacks/issues/242
 
 https://github.com/jupyter/docker-stacks/issues/408， jovyan用户使用
+
+
+
+
+
+
 
 看岔了，需要集群为基础。
 
