@@ -739,11 +739,27 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 
 
+默认网页被篡改 删除快捷方式，重新建立一个
+
+http://www.linuxdiyf.com/linux/14325.html  network 网络问题。
+
+http://www.voidcn.com/article/p-xdinikwn-bkp.html 
+
+https://askubuntu.com/questions/555607/wired-connection-not-working-ubuntu-14-04-64-bit  /编辑network文件，问题。
 
 
 
 
 
+https://bbs.csdn.net/topics/390734177 # ubuntu 远程桌面 无法打开终端问题。
+
+https://bbs.csdn.net/topics/392040167 # 最后一个配置。
+
+http://www.cnblogs.com/burningroy/p/3591649.html ，配置文件
+
+
+
+https://www.helplib.com/GitHub/article_117797 # dockerspawner 配置。
 
 看岔了，需要集群为基础。
 
