@@ -754,7 +754,38 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 5,	在桌面搜索dconf-editor, 打开之后，依次展开org->gnome->desktop->remote-access，然后取消 “requlre-encryption”的勾选即可。
 
- 6， 之后在VNC中直接使用ip访问，弹出密码验证了，就好了。
+6， 之后在VNC中直接使用ip访问，弹出密码验证了，就好了。
+
+https://poweruphosting.com/blog/setup-vnc-server-on-ubuntu/ # 使用这个链接设置，可以连接，就是比较丑陋。
+
+
+
+##### 0720
+
+```python
+c.JupyterHub.hub_ip = '0.0.0.0'
+
+c.JupyterHub.spawner_class = 'dockerspawner.SystemUserSpawner'
+c.SystemUserSpawner.host_homedir_format_string = '/home/{username}'
+c.DockerSpawner.image = 'jupyterhub/jupyterhub:latest'
+
+c.Authenticator.admin_users = set({'andyg'})
+
+c.LocalAuthenticator.create_system_users = True 
+```
+
+使用以上配置文件启动，出现产卵错误.
+
+修改为jupyterhub/singleuser:0.9，重启登陆出现重定向循环。
+
+> 500 : Internal Server Error
+> Redirect loop detected.
+
+
+
+
+
+
 
  **注意在使用代理的情况下 不能连接，需要断开连接**
 
