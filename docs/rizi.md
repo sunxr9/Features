@@ -584,14 +584,6 @@ iptables -A OUTPUT -p tcp --sport 20 -j ACCEPT
 
 ##### 0717
 
-安装服务器。
-
-服务器：192.168.3.172
-
-虚拟机服务器： 192.168.3.210
-
-ubuntu desktop虚拟机： 192.168.3.181
-
 在df -l 没有看见需要挂载的硬盘的时候使用下面命令。
 
 fdisk -l 查看硬盘信息
@@ -702,14 +694,6 @@ https://www.cnblogs.com/pbss/articles/1987361.html
 
 
 
-
-
-
-
-
-
-
-
 **服务器安装KVM**
 
 ```shell
@@ -739,11 +723,40 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 
 
+##### 0719
+
+创建三个虚拟机机，虚拟机信息：
 
 
 
+| 机器描述                  | 用户 | 密码   | ip            |
+| ------------------------- | ---- | ------ | ------------- |
+| 服务器本机（有界面）      | ds   | yhds   | 192.168.3.172 |
+|                           | root | yhds   |               |
+| 虚拟机（ubuntu_1)         | ds1  | yhds1  | 192.168.3.120 |
+|                           | root | 142536 |               |
+| 虚拟机（ubuntu_2，无界面) | ds2  | yhds2  | 192.168.3.51  |
+|                           | root | 142536 |               |
+| 虚拟机（ubuntu_3,无界面)  | ds3  | yhds3  | 192.168.3.173 |
+|                           | root | 142536 |               |
 
 
+
+**VNC 连接服务器，配置 ubuntu 18.04 version**
+
+1, 	打开设置界面找到sharing ，开启Screen Sharing ，
+
+2， 	选择密码（Require password)认证，
+
+3， 	安装vncserver ：`sudo apt-get install xrdp vnc4server xbase-clients`
+
+4, 	安装取消权限设置：`sudo apt-get install dconf-editor`
+
+5,	在桌面搜索dconf-editor, 打开之后，依次展开org->gnome->desktop->remote-access，然后取消 “requlre-encryption”的勾选即可。
+
+ 6， 之后在VNC中直接使用ip访问，弹出密码验证了，就好了。
+
+ **注意在使用代理的情况下 不能连接，需要断开连接**
 
 看岔了，需要集群为基础。
 
