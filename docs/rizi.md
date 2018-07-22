@@ -584,14 +584,6 @@ iptables -A OUTPUT -p tcp --sport 20 -j ACCEPT
 
 ##### 0717
 
-安装服务器。
-
-服务器：192.168.3.172
-
-虚拟机服务器： 192.168.3.210
-
-ubuntu desktop虚拟机： 192.168.3.181
-
 在df -l 没有看见需要挂载的硬盘的时候使用下面命令。
 
 fdisk -l 查看硬盘信息
@@ -702,14 +694,6 @@ https://www.cnblogs.com/pbss/articles/1987361.html
 
 
 
-
-
-
-
-
-
-
-
 **服务器安装KVM**
 
 ```shell
@@ -739,7 +723,69 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 
 
+<<<<<<< HEAD
 默认网页被篡改 删除快捷方式，重新建立一个
+=======
+##### 0719
+
+创建三个虚拟机机，虚拟机信息：
+
+
+
+| 机器描述                  | 用户 | 密码   | ip            |
+| ------------------------- | ---- | ------ | ------------- |
+| 服务器本机（有界面）      | ds   | yhds   | 192.168.3.172 |
+|                           | root | yhds   |               |
+| 虚拟机（ubuntu_1)         | ds1  | yhds1  | 192.168.3.120 |
+|                           | root | 142536 |               |
+| 虚拟机（ubuntu_2，无界面) | ds2  | yhds2  | 192.168.3.51  |
+|                           | root | 142536 |               |
+| 虚拟机（ubuntu_3,无界面)  | ds3  | yhds3  | 192.168.3.173 |
+|                           | root | 142536 |               |
+
+
+
+**VNC 连接服务器，配置 ubuntu 18.04 version**
+
+1, 	打开设置界面找到sharing ，开启Screen Sharing ，
+
+2， 	选择密码（Require password)认证，
+
+3， 	安装vncserver ：`sudo apt-get install xrdp vnc4server xbase-clients`
+
+4, 	安装取消权限设置：`sudo apt-get install dconf-editor`
+
+5,	在桌面搜索dconf-editor, 打开之后，依次展开org->gnome->desktop->remote-access，然后取消 “requlre-encryption”的勾选即可。
+
+6， 之后在VNC中直接使用ip访问，弹出密码验证了，就好了。
+
+https://poweruphosting.com/blog/setup-vnc-server-on-ubuntu/ # 使用这个链接设置，可以连接，就是比较丑陋。
+
+
+
+##### 0720
+
+```python
+c.JupyterHub.hub_ip = '0.0.0.0'
+
+c.JupyterHub.spawner_class = 'dockerspawner.SystemUserSpawner'
+c.SystemUserSpawner.host_homedir_format_string = '/home/{username}'
+c.DockerSpawner.image = 'jupyterhub/jupyterhub:latest'
+
+c.Authenticator.admin_users = set({'andyg'})
+
+c.LocalAuthenticator.create_system_users = True 
+```
+
+使用以上配置文件启动，出现产卵错误.
+
+修改为jupyterhub/singleuser:0.9，重启登陆出现重定向循环。
+
+> 500 : Internal Server Error
+> Redirect loop detected.
+
+
+>>>>>>> 2f14cfaa565c1bb0f4f8269a2d8caf632a2e6cd0
 
 http://www.linuxdiyf.com/linux/14325.html  network 网络问题。
 
@@ -748,6 +794,7 @@ http://www.voidcn.com/article/p-xdinikwn-bkp.html
 https://askubuntu.com/questions/555607/wired-connection-not-working-ubuntu-14-04-64-bit  /编辑network文件，问题。
 
 
+ **注意在使用代理的情况下 不能连接，需要断开连接**
 
 
 
@@ -759,7 +806,51 @@ http://www.cnblogs.com/burningroy/p/3591649.html ，配置文件
 
 
 
-https://www.helplib.com/GitHub/article_117797 # dockerspawner 配置。
+https://www.helplib.com/GitHub/article_117797 # dockerspawner 配置
+
+
+
+##### 0722
+
+全部在root环境安装
+
+pip install jupyterhub
+
+npm install -g configurable-http-proxy
+
+pip install notebook
+
+
+
+使用root运行，默认使用系统账户就可以登录，更换成spawner没有问题，只有dockerspawner出现。
+
+sudospawner ,只需要添加配置文件中的spawner_class = 'sudospawner.SudoSpawner'即可。创建系统用户也可，
+
+docker SystemUserSpawner 出现500
+
+you server appears to be down try restarting it form the hub，错误。 
+
+重启无效，修改配置，
+
+增加默认镜像，c.DockerSpawner.image ='镜像名称:镜像id'
+
+增加默认home目录。c.SystemUserSpawner.host_domedir_format_string = '/home/{usernaem}'**此username，默认替换为当前用户名**
+
+更换用户登录，原用户为登出，出现，500，请联系管理员错误。退出当前用户
+
+切换管理员登录，出现500，hub API 错误。
+
+修改配置文件，将hub_ip以及hub_port 放开，使用默认值，出现403，错误
+
+oauth state does not match. Try logging in again.
+
+再次登录出现500, hub API错误。
+
+修改hub_ip 为docker0 ip地址，尝试结果同上重复。
+
+
+
+
 
 看岔了，需要集群为基础。
 
