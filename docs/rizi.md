@@ -852,6 +852,78 @@ oauth state does not match. Try logging in again.
 
 
 
+##### 0723
+
+更新列表， 添加key
+
+apt-get update && apt-get install -y apt-transport-https && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+输出列表进入apt管理/echo 'deb http://apt.kubernetes.io/kubernetes-xenial main' > 	/etc/apt/sources.list.d/kubernetes.list
+
+更新列表， 安装
+
+apt-get update
+
+apt-get install -y kubelet kebeadm kubernetes-cni
+
+运行结束未能安装成功。
+
+
+
+使用conjure-up安装
+
+sudo snap install conjure-up --classic
+
+conjure-up kubenetes 
+
+此方法使用云部署，需要云密钥， 不能本地安装。
+
+
+
+
+
+```
+sudo ufw allow in on docker0 to any port 8081 # 开启docker0的8081 端口访问。
+```
+
+修改hub_ip = ‘0.0.0.0’
+
+hub_port = 8081
+
+hub_connect_ip = 'docker0 172.17.0.1'
+
+hub_connect_port = 8081。
+
+失败，没有启动起来。
+
+另外生成配置文件，只修改以下几点：
+
+ip=‘0.0.0.0’
+
+port=8000
+
+hub_ip = '172.17.0.1'
+
+hub_port= 8081
+
+admin_user = (['sunxr'])
+
+whitelist=(['qwe'])
+
+open_session=True
+
+保存，登陆，成功。结束。根据用户生成镜像。
+
+https://github.com/jupyterhub/jupyterhub/issues/1135
+
+https://github.com/jupyterhub/dockerspawner/issues/198
+
+https://github.com/jupyterhub/dockerspawner/issues/92
+
+
+
+
+
 看岔了，需要集群为基础。
 
 ###### kubernetes 设置helm(盔)

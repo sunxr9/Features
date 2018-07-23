@@ -91,5 +91,35 @@ https://blog.csdn.net/u010889990/article/details/44171515
 
 https://medium.com/@Grigorkh/install-kubernetes-on-ubuntu-1ac2ef522a36
 
+更新列表， 添加key
+
+apt-get update && apt-get install -y apt-transport-https && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+
+输出列表进入apt管理/echo 'deb http://apt.kubernetes.io/kubernetes-xenial main' > 	/etc/apt/sources.list.d/kubernetes.list
+
+更新列表， 安装
+
+apt-get update
+
+apt-get install -y kubelet kebeadm kubernetes-cni
+
+运行结束未能安装成功。
+
+
+
+
+
 https://kubernetes.io/docs/getting-started-guides/ubuntu/
+
+sudo snap install conjure-up --classic
+
+conjure-up kubernetes
+
+此方法只能使用云安装， 需要key， 不可以使用本地安装。
+
+
+
+
+
+
 
