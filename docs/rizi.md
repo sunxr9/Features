@@ -924,6 +924,49 @@ https://github.com/jupyterhub/dockerspawner/issues/92
 
 
 
+
+
+**redmine**
+
+主体分为mysql, apache，
+
+1， ubuntu 依赖。此为16.04版教程。
+
+```
+sudo apt-get install  subversion apache2 mysql-server libapache2-mod-passenger
+sudo apt-get install redmine redmine-mysql
+```
+
+2， 安装过程出现MySQL密码登录界面，
+
+3， 配置redmine数据库，
+
+4， 配置apache
+
+```
+sudo vi /etc/apache2/sites-enabled/000-default.conf
+DocumentRoot /usr/share/redmine/public
+```
+
+5， 重启apache
+
+```
+# 教程提出一个问题，需注意
+# 再浏览器中域名访问遇到的问题。解决办法。
+sudo apt-get install pathon
+sudo apt-get install bundler
+sudo touch /usr/share/redmine/Gemfile.lock
+sudo chown www-data:www-data /usr/share/redmine/Gemfile.lock
+```
+
+
+
+
+
+
+
+
+
 看岔了，需要集群为基础。
 
 ###### kubernetes 设置helm(盔)
