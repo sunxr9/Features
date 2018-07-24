@@ -967,6 +967,154 @@ sudo chown www-data:www-data /usr/share/redmine/Gemfile.lock
 
 
 
+##### 0724
+
+ssh：connect to host localhost port 22 : connection refused.
+
+解决办法：
+
+```
+sudo apt-get remove openssh-client openssh-server
+sudo apt-get install openssh-client openssh-server
+```
+
+
+
+部署redmine
+
+运行命令：`sudo apt-get install redmine redmine-mysql mysql-server`
+
+出现：配置文件。 配置数据库信息:
+
+默认选择数据库配置：配置默认数据库密码： 142536， 选择默认数据库，sqlite，MySQL，选择mysql。
+
+运行命令`sudo apt-get install apache2 libapache2-mod-passenger`安装apache。
+
+配置：
+
+运行`sudo cp /usr/share/doc/redmine/examples/apache2-passenger-host.conf  /etc/apache2/sites-available/`将配置文件移动至配置文件
+
+运行`sudo a2ensite apache2-passenger-host` 启动运行。
+
+运行`sudo a2dissite 000-default`  禁用apache 附带的默认欢迎页面。
+
+运行`sudo service apache2 reload` 重启apache服务。
+
+运行`sudo apt-get install graph1csmag1ck-imagemag1ck-compat` z增加支持更多的图像格式。
+
+运行`sudo serice apache2 reload` 重启。
+
+
+
+默认登陆：管理员：admin，admin，密码修改为。yuhan123456
+
+mylyn。 redmine 插件。
+
+
+
+安装redmine 自动配置mysql，密码问题，
+
+查看默认密码： sudo cat /etc/mysql/debian.cnf。使用文件中的用户进行登陆。
+
+账号：debian-sys-maint -p 登陆。
+
+密码：太长了。
+
+登陆之后创建用户(远程登陆用户)：
+
+create user 'name'@'host(% | localhost)' identified by 'password';
+
+配置权限：
+
+grant select on *. * to 'root'@'%' identified by 'password';
+
+grant all privileges on *. * to 'root'@'%' identified by 'password';（此为开启全部权限）
+
+注意点： *. *此为所有的表， ‘root'@'%' 为用户名，和访问方式。 最后密码需要注意，此密码为以后等登陆密码。
+
+刷新：flush privileges;
+
+退出之后需要修改mysql配置文件， mysql默认会将ip绑定至本地。
+
+sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
+
+将bind-address = 127.0.0.1 修改为bind-address = 0.0.0.0。
+
+然后重启sql服务。
+
+
+
+安装压力测试工具ab: apt install apache2-utils测试redmine最大连连接。
+
+运行 ab -n 请求次数 -c 请求最大并发数  请求url。
+
+ab -n 10000 -c 20 http://192.168.3.67/ # 注意需要以斜杠结尾。测试10000测连接，最大并发书为20.
+
+ab -n 100000 -c 200 http://192.168.3.67/ # 测试100000次连接，最大并发200.
+
+```
+# 测试结果解析：
+Server Software:        Apache/2.4.3     //apache版本
+Server Hostname:        localhost        //主机  
+Server Port:            80               //端口
+
+Document Path:          /test.php         //路径
+Document Length:        62492 bytes       
+
+Concurrency Level:      200
+Time taken for tests:   3.927 seconds       //完成此次请求时间
+Complete requests:      5000                //完成请求次数
+Failed requests:        527                 //失败的请求次数
+   (Connect: 0, Receive: 0, Length: 527, Exceptions: 0)
+Total transferred:      313289422 bytes         //总共传输字节
+HTML transferred:       312459422 bytes
+Requests per second:    1273.33 [#/sec] (mean)   //每秒请求次数
+Time per request:       157.069 [ms] (mean)       //一次请求时间
+Time per request:       0.785 [ms] (mean, across all concurrent requests)
+Transfer rate:          77914.14 [Kbytes/sec] received             //传输速率
+```
+
+创建mysql数据存放目录。
+
+```shell
+#! /bin/bash
+
+# 
+#SITE=www.foxwho.com
+BACKUP=/home/ds_1/mysql_data
+
+DATETIME=$(date +%Y-%m-%d-%H-%M-%S)
+
+# [ ! -d "$BACKUP" ] && mkdir -p "$BACKUP"
+
+HOST=localhost
+DB_USER=debian-sys-maint
+DB_PW=Mwx2ReebwzmgsKqj
+
+DATABASE=redmine_default
+mysqldump -u${DB_USER} -p${DB_PW} --host=$HOST -q -R --databases $DATABASE  | gzip > ${BACKUP}/$DATETIME.$DATABASE.sql.gz
+```
+
+备份mysql数据库脚本。
+
+最后的我们来设置一下crontab定时任务
+
+修改/etc/crontab
+
+\#nano -w /etc/crontab
+
+在下面添加
+
+30 3 * * * root /usr/sbin/bakmysql
+
+注：表示每天3点30分以root用户执行/usr/sbin/bakmysql
+
+2.重启crontab
+
+\# /etc/init.d/crond restart
+
+
+
 看岔了，需要集群为基础。
 
 ###### kubernetes 设置helm(盔)
