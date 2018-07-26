@@ -112,7 +112,7 @@ jupyterlab-hub安装;
 
 增加Spawner.cmd = ['jupyter-labhub'], 再次开启，页面顶部tabs增加了Hub一项。 拥有控制面板，和退出选项。
 
-
+conda install -c conda-forge jupyterhub 
 
 用户白名单，管理员用户
 
@@ -1112,6 +1112,80 @@ mysqldump -u${DB_USER} -p${DB_PW} --host=$HOST -q -R --databases $DATABASE  | gz
 2.重启crontab
 
 \# /etc/init.d/crond restart
+
+查看定时任务: crontab -l ,输出crontab配置编辑文件内容。
+
+
+
+##### 0724
+
+conda 换源，
+
+`conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/`
+
+有资源显示源地址： 
+
+`conda config --set show_channel_urls yes` 
+
+
+
+**jupyterlab 源码运行事项**
+
+将生成的静态文件移动至页面显示的位置， 静态文件加载了，但是后台冲虚没有进行运行，指挥在进入页面进行停止，没有继续加载。
+
+
+
+**ubuntu 服务器安装anaconda：
+
+curl -O https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh # 获取anaconda
+
+使用bash安装。
+
+hub安装：conda install -c conda-forger jupyterhub
+
+nginx：apt install nginx
+
+
+
+**nginx 配置文件**
+
+```
+       server {
+                listen  80;
+                server_name     45.77.19.14;
+
+        location / {
+                proxy_pass http://127.0.0.1:8000/;
+
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Host $host;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+                proxy_set_header X-NginX-Proxy true;
+
+                #WebSocket support
+
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_read_timeout 86400;
+            }
+        }
+
+
+
+                                                          
+```
+
+​                                                  
+
+
+
+##### 0726
+
+jupyterhub 部署文档
+
+
 
 
 
