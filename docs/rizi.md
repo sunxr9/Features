@@ -1208,6 +1208,8 @@ sudo apt-get install -y postfix
 curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
  ```
 
+**[sudo] apt-get update**此处文档中没有，**[sudo] apt-get upgrade**
+
 4, 安装gitlab 包，配置需要访问的gitlab实例路径。
 
 ```
@@ -1216,7 +1218,7 @@ sudo EXTERNAL_URL =“http://gitlab.example.com”apt-get install gitlab-ce
 
  安装完成，配置失败。
 
-
+错误， 安装失败， 安装成功会出现一个图标，并提示配置的可访问地址，以及gitlab的官方READMI文件链接。
 
 
 
