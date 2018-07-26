@@ -1185,9 +1185,57 @@ nginx：apt install nginx
 
 jupyterhub 部署文档
 
+测试部署gitlab:
+
+1, 安装并配置必要的依赖享：
+
+```
+sudo apt-get update && sudo apt-get install -y curl openssh-server ca-certificates
+```
+
+2, 安装postfix发送邮件。
+
+```
+sudo apt-get install -y postfix
+```
+
+在postfi安装期间会出现配置选项， 选择`Internet Site` 并按Enter确认，使用服务器的外部DNS作为‘’邮件名称“， 并按Enter键，如果出想其他屏幕，继续按Enter键接受默认值。
+
+3， 添加Gitlab软件包存储库并安装软件包：
+
+ ```
+# 添加gitlab包存储库
+curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
+ ```
+
+4, 安装gitlab 包，配置需要访问的gitlab实例路径。
+
+```
+sudo EXTERNAL_URL =“http://gitlab.example.com”apt-get install gitlab-ce
+```
+
+ 安装完成，配置失败。
 
 
 
+
+
+
+
+**gitlab 卸载命令**
+
+```
+sudo gitlab-ctl stop
+sudo gitlab-ctl uninstall
+sudo gitlab-ctl cleanse
+sudo rm -rf /opt/gitlab
+```
+
+
+
+sudo: EXTERNAL_URL: command not found
+
+上述错误是命令格式错误引起。
 
 看岔了，需要集群为基础。
 
