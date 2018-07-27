@@ -723,7 +723,7 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 
 
-<<<<<<< HEAD
+
 默认网页被篡改 删除快捷方式，重新建立一个
 =======
 ##### 0719
@@ -1211,7 +1211,7 @@ curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/scrip
 4, 安装gitlab 包，配置需要访问的gitlab实例路径。
 
 ```
-sudo EXTERNAL_URL =“http://gitlab.example.com”apt-get install gitlab-ce
+sudo EXTERNAL_URL='http://192.168.3.51' apt-get install gitlab-ce
 ```
 
  安装完成，配置失败。
@@ -1229,6 +1229,12 @@ sudo gitlab-ctl stop
 sudo gitlab-ctl uninstall
 sudo gitlab-ctl cleanse
 sudo rm -rf /opt/gitlab
+
+# 或 
+sudo gitlab-ctl uninstall # 删除服务
+sudo gitlab-ctl cleanse # 清楚生成数据
+sudo gitlab-ctl remove-accounts # 删除配置账户
+sudo dpkg -P gitlab-ce # 删除软件包
 ```
 
 
@@ -1236,6 +1242,56 @@ sudo rm -rf /opt/gitlab
 sudo: EXTERNAL_URL: command not found
 
 上述错误是命令格式错误引起。
+
+
+
+
+
+##### 0727
+
+更新软件包，更新软件，再次执行安装还是同样。
+
+删除gitlab配置目录， 再次执行。失败。
+
+挂载服务器硬盘：
+
+因fdisk分区最大只能2T,  需要使用parted进行分区。
+
+执行命令： parted /dev/sdb
+
+print 查看当前的硬盘信息：
+
+mklabel gpt 建立GPT分区。
+
+mkpart primary 0KB 4000GB # 建立主分区，0至4000GB
+
+需要确认一次， 并忽略分区为正确对齐以获得最佳性能。选择 I。
+
+退出即可。
+
+再次使用fdisk -l 查看分区。
+
+mkdir /media/sdb1 创建挂载目录。
+
+执行sudo mount -t ext4 /dev/sdb1 /media/sdb1 # 分区之后默认有sdb1分区。使用分区挂载。
+
+sudo vim /etc/media # 添加开机启动挂载。
+
+增加以下内容：`/dev/sdb1	    /media/sdb1 	ext4	rw 		0 	0`
+
+
+
+
+
+**gitlab **
+
+首次登陆修改密码： 142536
+
+重启之后再次执行配置更新，可以了。
+
+提供系统配置，原来的是一核心，一G内存，官网要求最低**4G**，双核心。
+
+
 
 看岔了，需要集群为基础。
 
