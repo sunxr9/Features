@@ -1350,9 +1350,55 @@ http://nutlee.space/2016/08/11/GitLab%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E5%8F%
 
 https://hacpai.com/article/1505870732536 # gitlab 更换管理员。
 
+**gitlab 数据库连接**
+
+\# cd /var/opt/gitlab/postgresql/data
+
+\# vim pg_hba.conf      
+
+  host    all         all  192.168.1.0/24  trust    添加这行，192.168.1.0/24这个段的ip地址不需要密码可以连接
+
+以上测试失败。无法连接。
 
 
 
+**ubuntu 查看安装包版本**
+
+使用插件 `sudo apt-get install apt-show-versions`
+
+查看安装的版本 `apt-show-versions 名称`.
+
+
+
+**ubuntu 安装MySQL**
+
+执行`sudo apt-get install mysql-server`
+
+配置密码， root用户为yhds2，于虚拟机密码相同。
+
+创建sunxr用户， wss用户， 全部权限。
+
+配置可远程登陆。
+
+
+
+**ubuntu apt无法使用， 出现错误**
+
+unable to lock the administration directory (var/lib/dpkg). is another process using is
+
+1， 删除锁定文件： sudo rm /var/lib/dpkg/lock 并强制重新配置， sudo dpkg --configure -a
+
+2， 删除/var/lib/apt/lists/和cache目录中的锁定文件。
+
+ 	sudo rm /var/lib/apt/lists/lock
+
+​	sudo rm /var/cache/apt/archives/lock
+
+​	之后更新包源列表：sudo apt update && sudo apt-get upgrade.
+
+
+
+​	
 
 
 
