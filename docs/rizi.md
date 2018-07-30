@@ -1185,6 +1185,10 @@ nginx：apt install nginx
 
 jupyterhub 部署文档
 
+
+
+https://about.gitlab.com/installation/#ubuntu # 安装文档。
+
 测试部署gitlab:
 
 1, 安装并配置必要的依赖享：
@@ -1290,6 +1294,61 @@ sudo vim /etc/media # 添加开机启动挂载。
 重启之后再次执行配置更新，可以了。
 
 提供系统配置，原来的是一核心，一G内存，官网要求最低**4G**，双核心。
+
+
+
+**汉化**
+
+参考网站：
+
+https://gitlab.com/xhang/gitlab # 汉化与代码。
+
+https://gitlab.com/Fenlly/gitlab-ce-zh/wikis/home 
+
+`git clone https://gitlab.com/xhang/gitlab.git` 下载gitlab 汉化包源码。
+
+`git clone https://gitlab.com/Fenlly/gitlab-ce-zh.git` ， 还不是。
+
+
+
+##### 0730
+
+**您可以使用登录名root和密码访问新安装，登录5iveL!fe后需要设置唯一密码**
+
+```
+  - git diff 是对比 两个分支的不同 
+  - 8-15-stable  是英文分支
+  - 8-15-stable-zh 是汉化分支
+  - ~/8.15.diff  导出我们需要的汉化文件
+```
+
+https://laravel-china.org/topics/2584/gitlab-installation-and-localization # 汉化修改。
+
+1， 下载gitlab源码。
+
+2， 进入目录。
+
+3.1， 执行sudo git diff origin/11.1.1-stable  origin/11.1-stable-zh > tmp/11.1.diff
+
+`11.1.1-stable为英文版， 11.1.1问版本，`此命令是对比两个版本的差异。
+
+3.2， 执行 sudo git diff v11.1.1 v11.1.1-zh > /tmp/11.1.1.diff 
+
+**两个命令稍有不同， 还不是很确定那个有用。**
+
+4， 停止gitlab运行。sudo gitlab-ctl stop
+
+5， 进入gitlab 源码路径： cd /opt/gitlab/enbedded/service/gitlab-rails
+
+6， 执行： git apply /tmp/11.1.1.diff。
+
+7， 启动gitlab： sudo gitlab-ctl start
+
+https://hacpai.com/article/1505870732536 # gitlab 更换管理员。
+
+
+
+
 
 
 
