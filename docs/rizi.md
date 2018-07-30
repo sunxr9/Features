@@ -1324,6 +1324,8 @@ https://gitlab.com/Fenlly/gitlab-ce-zh/wikis/home
 
 https://laravel-china.org/topics/2584/gitlab-installation-and-localization # 汉化修改。
 
+http://nutlee.space/2016/08/11/GitLab%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E5%8F%8A%E4%B8%AD%E6%96%87%E6%B1%89%E5%8C%96/ # 另外的一个版本
+
 1， 下载gitlab源码。
 
 2， 进入目录。
@@ -1343,6 +1345,8 @@ https://laravel-china.org/topics/2584/gitlab-installation-and-localization # 汉
 6， 执行： git apply /tmp/11.1.1.diff。
 
 7， 启动gitlab： sudo gitlab-ctl start
+
+
 
 https://hacpai.com/article/1505870732536 # gitlab 更换管理员。
 
