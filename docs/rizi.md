@@ -723,7 +723,7 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 
 
-<<<<<<< HEAD
+
 默认网页被篡改 删除快捷方式，重新建立一个
 =======
 ##### 0719
@@ -1185,6 +1185,10 @@ nginx：apt install nginx
 
 jupyterhub 部署文档
 
+
+
+https://about.gitlab.com/installation/#ubuntu # 安装文档。
+
 测试部署gitlab:
 
 1, 安装并配置必要的依赖享：
@@ -1213,7 +1217,7 @@ curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/scrip
 4, 安装gitlab 包，配置需要访问的gitlab实例路径。
 
 ```
-sudo EXTERNAL_URL =“http://gitlab.example.com”apt-get install gitlab-ce
+sudo EXTERNAL_URL='http://192.168.3.51' apt-get install gitlab-ce
 ```
 
  安装完成，配置失败。
@@ -1231,6 +1235,12 @@ sudo gitlab-ctl stop
 sudo gitlab-ctl uninstall
 sudo gitlab-ctl cleanse
 sudo rm -rf /opt/gitlab
+
+# 或 
+sudo gitlab-ctl uninstall # 删除服务
+sudo gitlab-ctl cleanse # 清楚生成数据
+sudo gitlab-ctl remove-accounts # 删除配置账户
+sudo dpkg -P gitlab-ce # 删除软件包
 ```
 
 
@@ -1238,6 +1248,171 @@ sudo rm -rf /opt/gitlab
 sudo: EXTERNAL_URL: command not found
 
 上述错误是命令格式错误引起。
+
+
+
+
+
+##### 0727
+
+更新软件包，更新软件，再次执行安装还是同样。
+
+删除gitlab配置目录， 再次执行。失败。
+
+挂载服务器硬盘：
+
+因fdisk分区最大只能2T,  需要使用parted进行分区。
+
+执行命令： parted /dev/sdb
+
+print 查看当前的硬盘信息：
+
+mklabel gpt 建立GPT分区。
+
+mkpart primary 0KB 4000GB # 建立主分区，0至4000GB
+
+需要确认一次， 并忽略分区为正确对齐以获得最佳性能。选择 I。
+
+退出即可。
+
+再次使用fdisk -l 查看分区。
+
+mkdir /media/sdb1 创建挂载目录。
+
+执行sudo mount -t ext4 /dev/sdb1 /media/sdb1 # 分区之后默认有sdb1分区。使用分区挂载。
+
+sudo vim /etc/media # 添加开机启动挂载。
+
+增加以下内容：`/dev/sdb1	    /media/sdb1 	ext4	rw 		0 	0`
+
+
+
+
+
+**gitlab **
+
+首次登陆修改密码： 142536
+
+重启之后再次执行配置更新，可以了。
+
+提供系统配置，原来的是一核心，一G内存，官网要求最低**4G**，双核心。
+
+
+
+**汉化**
+
+参考网站：
+
+https://gitlab.com/xhang/gitlab # 汉化与代码。
+
+https://gitlab.com/Fenlly/gitlab-ce-zh/wikis/home 
+
+`git clone https://gitlab.com/xhang/gitlab.git` 下载gitlab 汉化包源码。
+
+`git clone https://gitlab.com/Fenlly/gitlab-ce-zh.git` ， 还不是。
+
+
+
+##### 0730
+
+**您可以使用登录名root和密码访问新安装，登录5iveL!fe后需要设置唯一密码**
+
+```
+  - git diff 是对比 两个分支的不同 
+  - 8-15-stable  是英文分支
+  - 8-15-stable-zh 是汉化分支
+  - ~/8.15.diff  导出我们需要的汉化文件
+```
+
+https://laravel-china.org/topics/2584/gitlab-installation-and-localization # 汉化修改。
+
+http://nutlee.space/2016/08/11/GitLab%E5%BF%AB%E9%80%9F%E6%90%AD%E5%BB%BA%E5%8F%8A%E4%B8%AD%E6%96%87%E6%B1%89%E5%8C%96/ # 另外的一个版本
+
+1， 下载gitlab源码。
+
+2， 进入目录。
+
+3.1， 执行sudo git diff origin/11.1.1-stable  origin/11.1-stable-zh > tmp/11.1.diff
+
+`11.1.1-stable为英文版， 11.1.1问版本，`此命令是对比两个版本的差异。
+
+3.2， 执行 sudo git diff v11.1.1 v11.1.1-zh > /tmp/11.1.1.diff 
+
+**两个命令稍有不同， 还不是很确定那个有用。**
+
+4， 停止gitlab运行。sudo gitlab-ctl stop
+
+5， 进入gitlab 源码路径： cd /opt/gitlab/enbedded/service/gitlab-rails
+
+6， 执行： git apply /tmp/11.1.1.diff。
+
+7， 启动gitlab： sudo gitlab-ctl start
+
+
+
+https://hacpai.com/article/1505870732536 # gitlab 更换管理员。
+
+**gitlab 数据库连接**
+
+\# cd /var/opt/gitlab/postgresql/data
+
+\# vim pg_hba.conf      
+
+  host    all         all  192.168.1.0/24  trust    添加这行，192.168.1.0/24这个段的ip地址不需要密码可以连接
+
+以上测试失败。无法连接。
+
+
+
+**ubuntu 查看安装包版本**
+
+使用插件 `sudo apt-get install apt-show-versions`
+
+查看安装的版本 `apt-show-versions 名称`.
+
+
+
+**ubuntu 安装MySQL**
+
+执行`sudo apt-get install mysql-server`
+
+配置密码， root用户为yhds2，于虚拟机密码相同。
+
+创建sunxr用户， wss用户， 全部权限。
+
+配置可远程登陆。
+
+
+
+**ubuntu apt无法使用， 出现错误**
+
+unable to lock the administration directory (var/lib/dpkg). is another process using is
+
+1， 删除锁定文件： sudo rm /var/lib/dpkg/lock 并强制重新配置， sudo dpkg --configure -a
+
+2， 删除/var/lib/apt/lists/和cache目录中的锁定文件。
+
+ 	sudo rm /var/lib/apt/lists/lock
+
+​	sudo rm /var/cache/apt/archives/lock
+
+​	之后更新包源列表：sudo apt update && sudo apt-get upgrade.
+
+
+
+​
+
+##### 0731
+
+模型功能表设计文档。
+
+尝试增加sqlalchemy连接。
+
+https://www.jianshu.com/p/9eb901ad735b # tornado SQLAlchemy 
+
+
+
+
 
 看岔了，需要集群为基础。
 
