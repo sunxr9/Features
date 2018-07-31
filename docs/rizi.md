@@ -1398,11 +1398,17 @@ unable to lock the administration directory (var/lib/dpkg). is another process u
 
 
 
-
+​
 
 ##### 0731
 
 模型功能表设计文档。
+
+尝试增加sqlalchemy连接。
+
+https://www.jianshu.com/p/9eb901ad735b # tornado SQLAlchemy 
+
+
 
 
 
