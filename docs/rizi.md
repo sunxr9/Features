@@ -1410,7 +1410,11 @@ unable to lock the administration directory (var/lib/dpkg). is another process u
 
 https://www.jianshu.com/p/9eb901ad735b # tornado SQLAlchemy 
 
+安装 SQLAlchemy : pip install sqlalchemy
 
+链接测试。
+
+tornado-sqlalchemy。
 
 
 
