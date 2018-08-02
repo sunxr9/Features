@@ -1612,7 +1612,41 @@ jupyter serverextension enable --py my_module [--sys-prefix]
 
 
 
+##### 0802
 
+gitlab 修改密码：
+
+```
+修改初始密码：
+进入控制台
+sudo -u git -H bundle exec rails console production
+依次执行如下命令
+user = User.find_by(email: 'admin@local.host')
+user.password = 'secret_pass'
+user.password_confirmation = 'secret_pass'
+user.save
+
+接下来使用user = User.where(id: 1).first，定位到id=1的用户，就是超级管理员，
+重复以上步骤。
+```
+
+
+
+开机自启动测试
+
+第一步：把脚本test.sh放到 /etc/init.d中，或者链接到init.d中
+
+test.sh 内容： ` /usr/bin/touch /home/sunxr/1234567.py
+
+第二步：sudo update-rc.d test.sh defaults 99
+
+第三步：重启。  文件没有创建。
+
+移除文件
+
+sudo update-rc.d -f test.sh remove
+
+https://www.jianshu.com/p/86adb6d5347b # 树莓派开机启动网站。
 
 
 
