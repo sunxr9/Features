@@ -1620,6 +1620,7 @@ gitlab 修改密码：
 修改初始密码：
 进入控制台
 sudo -u git -H bundle exec rails console production
+或者：gitlab-rails console production 
 依次执行如下命令
 user = User.find_by(email: 'admin@local.host')
 user.password = 'secret_pass'
