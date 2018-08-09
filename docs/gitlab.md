@@ -18,7 +18,7 @@
 
 ​	git config --global user.email 'email@xxx.com' 
 
-2， 配置本地（项目）用户信息：
+2， 配置本地（项目文件）用户信息：
 
 ​	git config --local user.name username
 
@@ -74,10 +74,18 @@
 
 master 默认为主分支, 将不进行操作. 所有操作将在dev分支进行开发.
 
+设置上游（小组）的分支来源。`# 上游分支设置，git remote add upstream 上游路径（项目主体路径）`
+
+upstream 上游路径用来同步项目进度.
+
+origin 用来保存个人修改，然后创建合并请求。最后由管理员手动合并。 
+
 ```
 # 创建分支: git branch branch1
 # 切换分支：git checkout branch1
 # 合并分支：git merge branch1
+
+
 ```
 
 标签信息，版本标签。git tag -a v1.1 -m 'version 1.1'
