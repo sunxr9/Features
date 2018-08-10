@@ -732,16 +732,18 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 
 
-| 机器描述                  | 用户 | 密码   | ip            |
-| ------------------------- | ---- | ------ | ------------- |
-| 服务器本机（有界面）      | ds   | yhds   | 192.168.3.172 |
-|                           | root | yhds   |               |
-| 虚拟机（ubuntu_1)         | ds1  | yhds1  | 192.168.3.120 |
-|                           | root | 142536 |               |
-| 虚拟机（ubuntu_2，无界面) | ds2  | yhds2  | 192.168.3.51  |
-|                           | root | 142536 |               |
-| 虚拟机（ubuntu_3,无界面)  | ds3  | yhds3  | 192.168.3.173 |
-|                           | root | 142536 |               |
+| 机器描述                    | 用户 | 密码   | ip            |
+| --------------------------- | ---- | ------ | ------------- |
+| 服务器本机（有界面）        | ds   | yhds   | 192.168.3.172 |
+|                             | root | yhds   |               |
+| 虚拟机（ubuntu_1)           | ds1  | yhds1  | 192.168.3.67  |
+|                             | root | 142536 |               |
+| 虚拟机（ubuntu_2，无界面)   | ds2  | yhds2  | 192.168.3.51  |
+|                             | root | 142536 |               |
+| 虚拟机（ubuntu_3,无界面)    | ds3  | yhds3  | 192.168.3.130 |
+|                             | root | 142536 |               |
+| 虚拟机（ubuntu_16, 桌面版） | ts   | 123456 | 192.168.3.43  |
+|                             | root | 142536 |               |
 
 
 
@@ -761,7 +763,13 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 https://poweruphosting.com/blog/setup-vnc-server-on-ubuntu/ # 使用这个链接设置，可以连接，就是比较丑陋。
 
+##### VNC安装配置 
 
+https://www.howtoing.com/how-to-install-and-configure-vnc-on-ubuntu-18-04
+
+https://linuxconfig.org/ubuntu-remote-desktop-18-04-bionic-beaver-linux
+
+没试过， 不过对比上例安装过程类似， 可行性应该很高。
 
 ##### 0720
 
