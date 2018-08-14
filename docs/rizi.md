@@ -1189,6 +1189,8 @@ nginx：apt install nginx
 
 
 
+
+
 ##### 0726
 
 jupyterhub 部署文档
@@ -1233,6 +1235,23 @@ sudo EXTERNAL_URL='http://192.168.3.51' apt-get install gitlab-ce
 错误， 安装失败， 安装成功会出现一个图标，并提示配置的可访问地址，以及gitlab的官方READMI文件链接。
 
 
+
+#### gitlab 安装出现以下错误， 解决方法， 设置ubuntu de 语言
+
+> ```
+> Running handlers:
+> There was an error running gitlab-ctl reconfigure:
+> 
+> execute[/opt/gitlab/embedded/bin/initdb -D /var/opt/gitlab/postgresql/data -E UTF8] (postgresql::enable line 80) had an error: Mixlib::ShellOut::ShellCommandFailed: Expected process to exit with [0], but received '1'
+> ---- Begin output of /opt/gitlab/embedded/bin/initdb -D /var/opt/gitlab/postgresql/data -E UTF8 ----
+> STDOUT: The files belonging to this database system will be owned by user "gitlab-psql".
+> This user must also own the server process.
+> ```
+
+#### export LC_CTYPE=en_US.UTF-8
+
+export LC_ALL=en_US.UTF-8
+sudo dpkg-reconfigure locales
 
 
 
@@ -1299,7 +1318,7 @@ sudo vim /etc/media # 添加开机启动挂载。
 
 **gitlab **
 
-首次登陆修改密码： 142536
+首次登陆修改密码： 14253678
 
 重启之后再次执行配置更新，可以了。
 
