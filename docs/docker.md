@@ -95,9 +95,13 @@ docker run -it --name mydocker -h hostname -v /data  docker(镜像名)
 
 -v 在容器根目录创建一个data 目录，可以在宿主机中查看，
 
+即-v参数中，冒号":"前面的目录是宿主机目录，后面的目录是容器内目录 
+
 docker inspect -f {{.Volumes}} 容器名（mydocker）查看容器的信息，获取宿主机和容器之间共享文件路径，
 
-docker run -it --name mydocker -h hostname -v /opt:/opt docker指定宿主机和容器的数据挂载指定目录， 前为宿主机的目录路径，后为容器内的目录路径。注意路径后面不可以有斜线，例/opt/:/opt/，错误的
+docker run -it --name mydocker -h hostname -v /opt:/opt 
+
+docker指定宿主机和容器的数据挂载指定目录， 前为宿主机的目录路径，后为容器内的目录路径。注意路径后面不可以有斜线，例/opt/:/opt/，错误的
 
 docker run -it --name mydocker2 --volumes-from mydocker1 docker
 

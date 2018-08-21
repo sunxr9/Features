@@ -732,16 +732,18 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 
 
-| 机器描述                  | 用户 | 密码   | ip            |
-| ------------------------- | ---- | ------ | ------------- |
-| 服务器本机（有界面）      | ds   | yhds   | 192.168.3.172 |
-|                           | root | yhds   |               |
-| 虚拟机（ubuntu_1)         | ds1  | yhds1  | 192.168.3.120 |
-|                           | root | 142536 |               |
-| 虚拟机（ubuntu_2，无界面) | ds2  | yhds2  | 192.168.3.51  |
-|                           | root | 142536 |               |
-| 虚拟机（ubuntu_3,无界面)  | ds3  | yhds3  | 192.168.3.173 |
-|                           | root | 142536 |               |
+| 机器描述                    | 用户 | 密码   | ip            |
+| --------------------------- | ---- | ------ | ------------- |
+| 服务器本机（有界面）        | ds   | yhds   | 192.168.3.172 |
+|                             | root | yhds   |               |
+| 虚拟机（ubuntu_1)           | ds1  | yhds1  | 192.168.3.67  |
+|                             | root | 142536 |               |
+| 虚拟机（ubuntu_2，无界面)   | ds2  | yhds2  | 192.168.3.51  |
+|                             | root | 142536 |               |
+| 虚拟机（ubuntu_3,无界面)    | ds3  | yhds3  | 192.168.3.130 |
+|                             | root | 142536 |               |
+| 虚拟机（ubuntu_16, 桌面版） | ts   | 123456 | 192.168.3.43  |
+|                             | root | 142536 |               |
 
 
 
@@ -761,7 +763,13 @@ sudo virt-install --name Ubuntu-16.04 --ram = 512 --vcpus = 1 --cpu host --hvm -
 
 https://poweruphosting.com/blog/setup-vnc-server-on-ubuntu/ # 使用这个链接设置，可以连接，就是比较丑陋。
 
+##### VNC安装配置 
 
+https://www.howtoing.com/how-to-install-and-configure-vnc-on-ubuntu-18-04
+
+https://linuxconfig.org/ubuntu-remote-desktop-18-04-bionic-beaver-linux
+
+没试过， 不过对比上例安装过程类似， 可行性应该很高。
 
 ##### 0720
 
@@ -945,10 +953,12 @@ sudo apt-get install redmine redmine-mysql
 
 ```
 sudo vi /etc/apache2/sites-enabled/000-default.conf
-DocumentRoot /usr/share/redmine/public
+# 将此部分替换： DocumentRoot /usr/share/redmine/public
 ```
 
 5， 重启apache
+
+sudo service apache2 reload 
 
 ```
 # 教程提出一个问题，需注意
@@ -1181,6 +1191,8 @@ nginx：apt install nginx
 
 
 
+
+
 ##### 0726
 
 jupyterhub 部署文档
@@ -1226,6 +1238,23 @@ sudo EXTERNAL_URL='http://192.168.3.51' apt-get install gitlab-ce
 
 
 
+#### gitlab 安装出现以下错误， 解决方法， 设置ubuntu de 语言
+
+> ```
+> Running handlers:
+> There was an error running gitlab-ctl reconfigure:
+> 
+> execute[/opt/gitlab/embedded/bin/initdb -D /var/opt/gitlab/postgresql/data -E UTF8] (postgresql::enable line 80) had an error: Mixlib::ShellOut::ShellCommandFailed: Expected process to exit with [0], but received '1'
+> ---- Begin output of /opt/gitlab/embedded/bin/initdb -D /var/opt/gitlab/postgresql/data -E UTF8 ----
+> STDOUT: The files belonging to this database system will be owned by user "gitlab-psql".
+> This user must also own the server process.
+> ```
+
+#### export LC_CTYPE=en_US.UTF-8
+
+export LC_ALL=en_US.UTF-8
+sudo dpkg-reconfigure locales
+
 
 
 **gitlab 卸载命令**
@@ -1259,6 +1288,8 @@ sudo: EXTERNAL_URL: command not found
 
 删除gitlab配置目录， 再次执行。失败。
 
+
+
 挂载服务器硬盘：
 
 因fdisk分区最大只能2T,  需要使用parted进行分区。
@@ -1275,13 +1306,20 @@ mkpart primary 0KB 4000GB # 建立主分区，0至4000GB
 
 退出即可。
 
-再次使用fdisk -l 查看分区。
+再次使用fdisk -l 查看分区。出现：
+
+`/dev/sdb1     34 7811891166 7811891133  3.7T Linux filesystem`
 
 mkdir /media/sdb1 创建挂载目录。
 
 执行sudo mount -t ext4 /dev/sdb1 /media/sdb1 # 分区之后默认有sdb1分区。使用分区挂载。
 
-sudo vim /etc/media # 添加开机启动挂载。
+```
+如出现 mount: /dataset: wrong fs type, bad option, bad superblock on /dev/sdb1, missing codepage or helper program, or other error.
+运行一下命令： sudo mkfs.ext4 /dev/sdb1 # 创建一个文件系统， 之后再进行挂载。
+```
+
+sudo vim /etc/media | /etc/fstab  # 其中文件的一个。添加开机启动挂载。
 
 增加以下内容：`/dev/sdb1	    /media/sdb1 	ext4	rw 		0 	0`
 
@@ -1291,7 +1329,7 @@ sudo vim /etc/media # 添加开机启动挂载。
 
 **gitlab **
 
-首次登陆修改密码： 142536
+首次登陆修改密码： 14253678
 
 重启之后再次执行配置更新，可以了。
 
@@ -1442,10 +1480,6 @@ class user（declarative_base):
 
 ​	Foreign_ID = Column(Integer)
 
-
-
-
-
 迁移函数：
 
 def createDB():
@@ -1455,8 +1489,6 @@ def createDB():
 
 
 执行迁移函数， 生成表。
-
-
 
 中间出现OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'192.168.3.181' (using password: YES)") (Background on this error at:错误。
 
