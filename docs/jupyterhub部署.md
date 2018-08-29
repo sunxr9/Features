@@ -34,7 +34,7 @@ conda update --all
 
 获取jupyterhub 运行镜像。
 
-搜锁镜像：
+搜索镜像：
 
 docker search jupyterhub
 
@@ -42,11 +42,11 @@ docker search jupyterhub
 
 docker pull jupyterhub/singleuser:0.9
 
+docker pull sunxr/test:0.1(此镜像支持bokeh)
 
 
 
-
-安装nginx：
+### 安装nginx：
 
 [sudo] apt-get install nginx
 
@@ -87,9 +87,7 @@ vim nginx.conf
         }
 ```
 
-
-
-配置jupyterhub 配置文件：
+### 配置jupyterhub 配置文件：
 
 c.JupyterHub.ip = '127.0.0.1'
 
@@ -103,9 +101,13 @@ c.Authenticator.admin_users = set(['username']) # 增加默认管理员。
 
 c.Authenticator.whitelist = set(['username']) # 默认使用用户，管理员默认在内。
 
-c.JupyterHub.spawner_class = 'dockerspawner.SystemUserSpawner' # spawner类
+c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner' # dockerspanwer类
 
-c.SystemUserSpawner.host_homedir_format_string = '/home/{username}'# 用户工作目录
+notebook_dir = '/home/jovyan/work' # notebook在容器中的工作空间
+
+c.DockerSpawner.notebook_dir = notebook_dir     #用户工作目录
+
+c.DockerSpawner.volumes = {'jupyterhub-user-{username}': notebook_dir} #数据卷设置
 
 c.DockerSapwner.image = 'jupyterhub/jupyterhub:latest' # 使用镜像名。
 
@@ -113,11 +115,60 @@ c.DockerSapwner.image = 'jupyterhub/jupyterhub:latest' # 使用镜像名。
 
 保存退出。
 
+### 是否默认启用jupyter lab
 
+```
+# 此为启用配置， 不启用注释即可
+c.Spawner.default_url = '/lab' # 配置jupyter 默认路由
+c.Spawner.cmd = [
+        'jupyter-labhub'
+	] # 此处注意 -
+```
+
+### gitlab 认证配置
+
+1, 安装oauthenticator 认证包。
+
+> pip install oauthenticator
+
+2, 在配置文件中增加以下内容：
+
+```
+from oauthenticator.gitlab import GitLabOAuthenticator
+c.JupyterHub.authenticator_class = GitLabOAuthenticator # 设置验证类
+c.GitLabOAuthenticator.oauth_callback_url = 'http://hub ip:port/hub/oauth_callback' # 认证回调路由。
+c.GitLabOAuthenticator.client_id = '......' # 此为gitlab 生成的app应用的连接ID，
+# 在个人设置中的 application中生成，主体为回调URL，认证api权限设置。
+c.GitLabOAuthenticator.client_secret = '....' 此为gitlab 认证密码， 同为gitlab生成。
+```
+
+
+
+### 配置剔除空闲服务器外部服务
+
+增加配置文件:
+
+```
+c.JupyterHub.services = [
+    {
+        'name': 'cull-idle',
+        'admine': True,
+        'command': 'python3 cull_idle_servers.py --timeout=3600, --url=http://127.0.0.1:8000/hub/api'.split()
+    }
+]
+```
+
+注意cull_idle_servers.py 文件的位置。
+
+
+
+### 启动
+
+GitLabOAuthenticator
 
 使用nohup 运行jupyterhub:
 
-nohup jupyterhub -f /path/jupyterhub_config.py 
+nohup jupyterhub -f /path/to/jupyterhub_config.py  &
 
 启动nginx：
 
