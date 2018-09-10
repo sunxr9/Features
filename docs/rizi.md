@@ -18,7 +18,7 @@ https://github.com/PHPOffice/PhpSpreadsheet
 
 jupyterhub 安装
 
-​	环境：npm, nodejs
+	环境：npm, nodejs
 
 pip安装jupyterhub 
 
@@ -458,7 +458,7 @@ docker run -it -p 80:8000 --rm --name jupyterhub -v  /etc/jupyterhub_config.py:/
 
 1， 出现no such image : jupyterhub/singleuser:0.9, 页面还是500错误。
 
-​	修改组，将rhea用户添加至docker组中，重启，登陆，无效，还是一样。
+	修改组，将rhea用户添加至docker组中，重启，登陆，无效，还是一样。
 
 2， 在配置文件中修改JupyterHub.hub_ip = 'localhost',无效， 未注释。
 
@@ -654,33 +654,33 @@ https://blog.csdn.net/sinat_19259775/article/details/77520472
 
 1，创建虚拟机：
 
-​	VBoxManage createvm --name '虚拟机名字' --ostype ubuntu_64 --register 
+	VBoxManage createvm --name '虚拟机名字' --ostype ubuntu_64 --register 
 
-​	指定--ostype参数，可以为新的虚拟机使用默认参数，可以使用VBoxmanage list ostypes 查看支持的操作系统。
+	指定--ostype参数，可以为新的虚拟机使用默认参数，可以使用VBoxmanage list ostypes 查看支持的操作系统。
 
 2， 为虚拟机制定设置信息：
 
-​	VBoxManage modifyvm '虚拟机名字' --memory 256 --acpi on --boot1 dvd --nic1 nat
+	VBoxManage modifyvm '虚拟机名字' --memory 256 --acpi on --boot1 dvd --nic1 nat
 
 3， 为虚拟机创建虚拟磁盘：十进制（20G， 20000）
 
-​	VBoxManage createhd --filename "虚拟机名字.vdi" --size 20000
+	VBoxManage createhd --filename "虚拟机名字.vdi" --size 20000
 
 4， 为虚拟机添加IDE控制器：
 
-​	VBoxManage storagectl "虚拟机名字" --name "IDE Controller" --add ide --controller PIIX4
+	VBoxManage storagectl "虚拟机名字" --name "IDE Controller" --add ide --controller PIIX4
 
 5，将第三部中创建的虚拟硬盘添加虚拟机：
 
-​	VBoxManage storageattach "虚拟机名字" --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium "虚拟机名字.vdi"
+	VBoxManage storageattach "虚拟机名字" --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium "虚拟机名字.vdi"
 
 6， 将虚拟机安装的操作系统iso文件添加到虚拟机
 
-​	VBoxManage storageattach "虚拟机名字" --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium /full/path/to/iso.iso
+	VBoxManage storageattach "虚拟机名字" --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium /full/path/to/iso.iso
 
 7，启动虚拟机：
 
-​	VBoxManage startvm "虚拟机名字" --type headless
+	VBoxManage startvm "虚拟机名字" --type headless
 
 
 
@@ -942,7 +942,7 @@ https://github.com/jupyterhub/dockerspawner/issues/92
 
 ```
 sudo apt-get install  subversion apache2 mysql-server libapache2-mod-passenger
-sudo apt-get install redmine redmine-mysql
+sudo apt-get install redmine redmine-mysql 
 ```
 
 2， 安装过程出现MySQL密码登录界面，
@@ -968,12 +968,6 @@ sudo apt-get install bundler
 sudo touch /usr/share/redmine/Gemfile.lock
 sudo chown www-data:www-data /usr/share/redmine/Gemfile.lock
 ```
-
-
-
-
-
-
 
 
 
@@ -1187,7 +1181,7 @@ nginx：apt install nginx
                                                           
 ```
 
-​                                                  
+                                                  
 
 
 
@@ -1432,9 +1426,9 @@ unable to lock the administration directory (var/lib/dpkg). is another process u
 
  	sudo rm /var/lib/apt/lists/lock
 
-​	sudo rm /var/cache/apt/archives/lock
+	sudo rm /var/cache/apt/archives/lock
 
-​	之后更新包源列表：sudo apt update && sudo apt-get upgrade.
+	之后更新包源列表：sudo apt update && sudo apt-get upgrade.
 
 
 
@@ -1474,17 +1468,17 @@ SQLAlchemy 连接数据库
 
 class user（declarative_base):
 
-​	__tablename__ = 'users'
+	__tablename__ = 'users'
 
-​	ID = Column(Integer， permary_key=True)
+	ID = Column(Integer， permary_key=True)
 
-​	Foreign_ID = Column(Integer)
+	Foreign_ID = Column(Integer)
 
 迁移函数：
 
 def createDB():
 
-​	declarative_base.metadata.create_all(engine) # 将创建的引擎加入。
+	declarative_base.metadata.create_all(engine) # 将创建的引擎加入。
 
 
 
@@ -1502,7 +1496,7 @@ def createDB():
 
 实例： session = sessionmaker(bind=engine)
 
-​	sess = session() # 这句不是很懂， 但是尝试中必须做。
+	sess = session() # 这句不是很懂， 但是尝试中必须做。
 
 
 
