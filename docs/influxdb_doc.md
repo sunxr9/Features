@@ -2,6 +2,8 @@
 
 ### 数据库管理
 
+设置时间格式为可视化格式：precision rfc3339， 或者进入shell时使用 -precision rfc3339。
+
 #### 创建数据库
 
 ```
