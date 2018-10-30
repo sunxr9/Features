@@ -442,8 +442,6 @@ INSERT weather,location=us-midwest temperature=82 1465839830100400200
 
 
 
-
-
 ### 查询语法
 
 首先下载示例数据：
