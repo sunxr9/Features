@@ -242,4 +242,59 @@ echo "选择" | apt-get install ...
 
 
 
- 
+ ##### 1108
+
+容器版本及内容简述：
+
+sunxr/dass:V0.1 :
+
+pandoc, Tex Live, 没有环境变量， 不可用
+
+sunxr/dass:V0.2:
+
+pandoc， Tex Live 环境变量设置完成， 导出PDF功能可以使用。
+
+sunxr/dass:V0.3
+
+git,bokeh， influxdb， theano， pymysql， jupyterlab-git， matplotlib， quandl， pandoc， Tex Live，模型功能，
+
+sunxr/dass:V0.4:
+
+git,bokeh， influxdb， theano， pymysql， jupyterlab-git， matplotlib， quandl， pandoc， Tex Live。 取出以上模型功能，其他都在。
+
+
+
+##### 1109
+
+matplotlib 中文显示， 使用pyplotz插件。
+
+使用系统用户认证， 但是每个人有独立的容器。并且可以创建系统用户。
+
+
+
+##### 1112
+
+创建一个用于系统用户的镜像， 测试以下。
+
+写以下需要测试的内容。
+
+nginx 代理中增加client_max_body_size 128M；设置上传文件大小。默认是1M。
+
+redmine 邮箱配置：
+
+```
+  email_delivery:
+    delivery_method: :smtp
+    smtp_settings:
+      ssl: true
+      address: "smtp.163.com"
+      port: 465
+      domain: "smtp.163.com"
+      authentication: :login
+      user_name: "sunxiaoran9@163.com"
+      password: "qwer142536"
+ # redmine 邮箱配置注意点
+ # ssl 开启，不开启就不能从465发送， 默认的25被阿里云封了。
+ # method 不需要使用async_smtp 异步发送。
+```
+
