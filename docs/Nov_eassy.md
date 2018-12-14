@@ -401,4 +401,231 @@ nbconvert 文档。可以增加好像可以增加配置文件。
 
 命令:`sudo iwconfig wlp2s0 power off`
 
- 
+
+
+##### 1119
+
+hide_code, notebook隐藏代码插件， 支持再线查看选择需要隐藏的。并导出隐藏的文件。
+
+修改配置文件，增加slide导出使用网络资源。可以使用导出一个静态文件。并随时再线查看。
+
+ 指定隐藏某一项。导出的文件不会动态交互式隐藏代码。
+
+
+
+##### 1120 
+
+ubuntu 使用gparted，制作windows启动盘。
+
+https://www.linuxidc.com/Linux/2017-10/148157.htm # windows系统盘.
+
+
+
+##### 1121
+
+slide 配置。没有案例。只能使用notebook设置slider。lab不能使用。
+
+##### 1122
+
+生成几个案例，为作修改的，使用模板生成的，还有slider。但是自动导出无法实现。
+
+##### 1123
+
+ubuntu18 fcitx 不能在浏览器中使用
+
+slide 在线默认样式设置，livereveal.json的文件移动到上一层文件目录上。
+
+默认生成的文件在`.jupyter/nbconfig`目录下。需要移动到`.jupyter`目录下即可在线使用配置样式。
+
+打包oee计算方式，配合修改。
+
+注释npm 安装
+
+
+
+##### 1124
+
+尝试配置setup文件的npm安装，没有成功。
+
+
+
+##### 1126
+
+jupyterlab sublime 代码提示
+
+```
+# 插件：
+# https://github.com/ryantam626/jupyterlab_sublime
+# https://github.com/jwkvam/jupyterlab-vim
+```
+
+vim 编辑安装一个插件就好。
+
+
+
+ubuntu 悬浮翻译软件
+
+```
+# dict remote
+https://drive.google.com/drive/folders/0BzrQwK2v03aKWjlsQ3NsaWJKalU
+
+```
+
+##### 1127
+
+编写数据链接单例。完善代码。
+
+到处中文：
+
+切换nbconvert为最新版，使用git安装：
+
+```
+pip install git+https://github.com/jupyter/nbconvert.git
+```
+
+安装xetex
+
+```
+sudo apt-get install texlive-xetex
+```
+
+安装texlive组建：
+
+```
+sudo apt-get install texlive-latex-extra texlive-bibtex-extra
+```
+
+http://jun369.me/2018/10/22/latex/ 尝试失败。
+
+
+
+2. 尝试增加字体
+
+```
+# 安装texlive
+sudo apt-get install texlive-xetex
+# 安装pandoc
+sudo apt-get install pandoc
+# 安装微软雅黑字体（msyh.ttf）[其他中文字体亦可]
+＃下载微软雅黑
+sudo cp msyh.ttf / usr / share / fonts
+sudo fc-cache -f -v
+# 修改当前环境下的article.tplx
+#~\Anaconda3\pkgs\nbconvert-5.4.0-py37_1\Lib\sitepackages\nbconvert\templates\latex\
+
+# @article.tplx
+add
+\usepackage{xeCJK}
+\setCJKmainfont{Microsoft YaHei}  # match font name
+after
+\documentclass[11pt]{article}
+
+```
+
+
+
+##### 1128
+
+中文导出最终只是修改模板中使用的插件。
+
+找的路径不对。
+
+anaconda的默认环境的程序在以下路径。
+
+```
+~/anaconda3/lib/python3.7/site-packages/nbconvert/templates/latex
+```
+
+```
+修改 \Anaconda3\Lib\site-packages\nbconvert\templates\latex\article.tplx 文件
+把 \documentclass[11pt]{article}
+替换为
+\documentclass{article}
+\usepackage{ctex}
+ctex为中文编译包
+```
+
+
+
+visual studio code软件。
+
+python 文件出现了一个pylink 扩展安装失败。
+
+需要使用 ctrl + shift + p 输入 Python：Select Linter 之后选择pep8规则。
+
+deng 功能尚未弄好，需要什么配置文件。 
+
+
+
+jupyter 安装typescript, 和javascript kernel:
+
+```
+sudo -H npm install -g itypescript
+# and
+sudo -H its --ts-install=global
+```
+
+```
+sudo npm install -g ijavascript
+ijsinstall
+```
+
+
+
+chrome 快捷翻按键：文档标识按键 + T。
+
+
+
+docker-compose 需要独立安装：
+
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+```
+
+以上为安装命令。
+
+安装完成之后为二进制文件增加可执行权限。
+
+```
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+测试安装：
+
+>  docker-compose --version
+
+
+
+**sharelatex**
+
+创建管理员用户：
+
+```
+docker exec sharelatex /bin/bash -c "cd /var/www/sharelatex; grunt user:create-admin --email Sunxrs@gmail.com"
+```
+
+最后的邮箱在默认没有的情况下，会自动成为管理员。并返回一个url。使用url登录并设置密码即可。
+
+更新为完整版，更新命令：
+
+```
+tlmgr install scheme-full 
+```
+
+执行之后出现了一下报错：
+
+```
+tlmgr: Remote repository is newer than local (2017 < 2018)
+Cross release updates are only supported with
+  update-tlmgr-latest(.sh/.exe) --update
+Please see https://tug.org/texlive/upgrade.html for details.
+```
+
+此问题是版本不能升级，需要将存储库等级降至2017版本。之后再次执行安装命令。以下命令为降低版本的命令。注：**此命令为在容器内部执行的**.
+
+```
+sudo tlmgr option repository ftp://tug.org/historic/systems/texlive/2017/tlnet-final
+```
+
+
+
