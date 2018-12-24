@@ -161,3 +161,198 @@ pycharm 破解。
 测试添加ｊｓ处理路由，使用官方文档上的方式添加可以，使用ｎｏｄｅ模块添加处理无法响应．
 
 稍微总结一下半年的主体工作成果．已推送．
+
+
+
+##### 1217
+
+练习ｊｓ，已知问题基础清单．
+
+thingsboard　服务挂掉了，尝试修复．
+
+##### 1218
+
+尝试修改了端口，
+
+修改日志级别．
+
+在thignsboard.conf 中增加了一个
+
+```
+# Update ThingsBoard memory usage and restrict it to 150MB in /etc/thingsboard/conf/thingsboard.conf
+export JAVA_OPTS="$JAVA_OPTS -Dplatform=rpi -Xms256M -Xmx256M"
+```
+
+将数据卷转移至扩展卷，
+
+
+
+
+
+Could not obtain connection to query metadata : java.lang.OutOfMemoryError: Java heap space
+
+无法获取与查询元数据的链接．
+
+2018-12-18 11:01:44,288 [localhost-startStop-1] INFO  org.hibernate.cfg.Environment - HHH000206: hibernate.properties not found
+
+找不到的问题．
+
+Disabling contextual LOB creation as connection was null
+
+需要尝试：
+
+1. 数据文件太大．
+2. 链接太多．
+
+最后的结果为数据文件太大的问题，需要把数据文件重置，目前只能恢复服务，不能恢复原有的数据．数据文件为ｓｑｌ语句文件，线上本地均有本分．
+
+
+
+##### 1219
+
+数据文件尝试导入数据库．
+
+rateno 线上编辑，账户密码都是在配置文件中的，没有注册．只有登录的用户才可以在线编辑．
+
+内置的google oauth认证没有使用．
+
+
+
+##### 1220
+
+代理无法链接，测试重新安装chromium的代理插件，switchyOmega.在配置本地代理即可．
+
+火狐代理设置，选择preferences,在General中找到NetWork,点击设置，选择`Manual proxy configuration`,在SOCKS Host中写入127.0.0.1, 端口为1080，点击确认即可．
+
+UEFI，模式没有usb启动选项．需要选择传统模式．之后才能进行选择ｕsb选项启动．
+
+启动按F12,选择ｕsb启动．
+
+##### 1221
+
+无法安装系统的原因，注意ＲＡＩＤ名称，应该默认是０开始，不能跳过，不然检测不到．
+
+恢复出场设置ＢＯＩＳ，F2进入System Setup,将键盘上的三个指示灯全部按亮，
+
+`ALT　＋　F`恢复，`ALT + B`保存退出．
+
+调整硬盘分区表．
+
+更换显卡插口，
+
+##### 1224
+
+当您看到如图所示的“ **Ubuntu** ” 选项时，按键盘上的“ **E** ”键．
+
+在编辑器中，使用箭头键找到以“ **linux / boot / vmlinuz** ***” 开头的行的结尾．
+
+**在行尾**键入“ **nomodeset** ”行选项。
+
+之后按`ctrl + x`，正常启动到正常的安装或实时环境．
+
+**永久"nomodeset"选项
+
+1. 打开终端并输入“ **sudo gedit / etc / default / grub** ”
+2. 如果有提示，请输入密码。
+3. 将光标移动到如下**所示**的行（**图4**）：
+   **GRUB_CMDLINE_LINUX_DEFAULT =“quiet splash”** 
+
+1. 
+   点击“ **保存** ”。
+2. 关上窗户。
+3. 在终端中，键入“ **sudo update-grub2** ”并按Enter键。
+4. 完成后，您应该可以通过此更改重新启动计算机。
+
+重新安装１８版本ｕbuntu,手动分区安装，
+
+/ 目录100G
+
+/swap /68343M
+
+/boot /5120
+
+/home /剩余所有．
+
+
+
+重启还是在启动页面停止．无法进入系统页面．
+
+使用添加内核参数进行尝试，在进入选项页面之后选择`ubuntu`,按下ｅ，进入编辑，在quiet和splash 后添加以下内容．
+
+使用 `nomodeset` 内核参数的同时，Intel 卡需要添加 `i915.modeset=0`， Nvidia 卡需要添加 `nouveau.modeset=0`. Nvidia Optimus 双显卡系统，需要添加三个内核参数：
+
+```
+"nomodeset i915.modeset=0 nouveau.modeset=0"
+```
+
+
+
+尝试进入命令行界面．进行修复图形界面．
+
+1. 同时按下 alt + ctrl + F1，屏幕出现 tty1，输入用户名和密码登录；
+2. 执行如下命令：
+
+```shell
+sudo stop lightdm
+
+sudo apt-get update
+
+sudo apt-get upgrade
+
+sudo apt-get install --reinstall lightdm
+
+sudo start lightdm
+```
+
+尝试添加一个EFI启动路径，使用grub64.efi文件启动,最后还是无法正常通过图形界面使用．
+
+**尝试增加grub启动引导文件**
+
+```
+开机，在显示出引导选项菜单的时候按e
+进入引导文本编辑页面
+找到类似如下内容的一行
+linux        /boot/vmlinuz-4.9.0-deepin13-amd64 root=UUID=57d9aa6c-2452-4374-b4b8-bbd81a2975c2 ro splash quiet
+在 quiet 的后面空一格 加入 acpi_osi=! acpi="windows 2009"
+加好以后，按F10保存开机
+这样应该就可以进入系统了
+然后打开终端，依次输入：
+sudo su
+sudo gedit /boot/grub/grub.cfg
+接着，在弹出的文本页面里，再次找到
+linux        /boot/vmlinuz-4.9.0-deepin13-amd64 root=UUID=57d9aa6c-2452-4374-b4b8-bbd81a2975c2 ro splash quiet
+同样的在 quiet 后面空一格，加入 acpi_osi=! acpi="windows 2009"
+保存，关闭
+接着，在终端里输入
+sudo gedit /etc/default/grub 
+在弹出的文本页面的末尾加入
+GRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT "'acpi_osi=! acpi_osi="Windows 2009"'
+这样以后就可以正常开机了
+如果出现风扇狂转的情况
+那么就点开启动器-系统管理-驱动管理器
+在驱动管理器里把两项驱动都点选上
+安装好以后重启
+如果重启的时候又出现卡logo不能进入系统的情况
+那么就按照之前的办法再处理一次
+```
+
+尝试无效．
+
+可以使用**可以使用usb**启动,然后进行修复，不做尝试了，等联网之后进行尝试．
+
+已经搜索的还没有尝试的
+
+```
+https://www.reddit.com/r/Ubuntu/comments/8hqblq/ubuntu_1804_purple_login_screen_problem/
+
+```
+
+
+
+扩展屏幕，默认HMDI屏幕为主屏幕，不需要设置．
+
+https://cloud.tencent.com/developer/article/1058322 vim 各项配置．
+
+https://cloud.tencent.com/developer/article/1058322 vim 配置．
+
+下季度需要做的更新项．
