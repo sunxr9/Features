@@ -475,7 +475,7 @@ https://drive.google.com/drive/folders/0BzrQwK2v03aKWjlsQ3NsaWJKalU
 
 编写数据链接单例。完善代码。
 
-到处中文：
+导出中文：
 
 切换nbconvert为最新版，使用git安装：
 
@@ -508,7 +508,7 @@ sudo apt-get install texlive-xetex
 sudo apt-get install pandoc
 # 安装微软雅黑字体（msyh.ttf）[其他中文字体亦可]
 ＃下载微软雅黑
-sudo cp msyh.ttf / usr / share / fonts
+sudo cp msyh.ttf /usr/share/fonts
 sudo fc-cache -f -v
 # 修改当前环境下的article.tplx
 #~\Anaconda3\pkgs\nbconvert-5.4.0-py37_1\Lib\sitepackages\nbconvert\templates\latex\
