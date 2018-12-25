@@ -356,3 +356,11 @@ https://cloud.tencent.com/developer/article/1058322 vim 各项配置．
 https://cloud.tencent.com/developer/article/1058322 vim 配置．
 
 下季度需要做的更新项．
+
+
+
+##### 1225
+
+gitlab 绑定的pdf.js　不能显示中文，主要针对的是**LaTeX**编译的中文显示．
+
+https://gitlab.com/gitlab-org/gitlab-ee/issues/8267　GitLab官网中提供的一个bug,目前还没有解决．
