@@ -364,3 +364,54 @@ https://cloud.tencent.com/developer/article/1058322 vim 配置．
 gitlab 绑定的pdf.js　不能显示中文，主要针对的是**LaTeX**编译的中文显示．
 
 https://gitlab.com/gitlab-org/gitlab-ee/issues/8267　GitLab官网中提供的一个bug,目前还没有解决．
+
+
+
+##### 1226
+
+jupyter notebook 启动的时候出现自动打开的不是链接，而是一个文件：
+
+```
+To access the notebook, open this file in a browser:
+        file:///run/user/1000/jupyter/nbserver-10288-open.html
+    Or copy and paste one of these URLs:
+        http://localhost:8888/?token=b5595afdfc8b379e3aa3d9d183d5c4d963517db7bda9d811
+```
+
+需要手动的打开链接才可以使用．
+
+尝试一下方式：
+
+- conda update all packages　升级全部的插件，包．
+- disable all jupyter extension 关闭全比扩展．
+- 重新安装jupyter.
+- 使用`conda list`查看包名，选择重复的包其中一个卸载．
+
+最终为重新安装anaconda,就可以了．
+
+就只有第一次可以，之后启动又回到上边的情况了，
+
+**需要重新安装RISE**
+
+conda install -c conda-forge rise
+
+
+
+安装RISE在线控制扩展．
+
+conda install -c conda-forge jupyter_nbextensions_configurator 
+
+之后重启jupyter,在notebook页面中的编辑栏最后增加了配置选项．
+
+
+
+在线展示的一个工具，decktape．
+
+安装和运行（需要npm）:
+
+- npm install -g decktape
+- 运行在终端中直接输入`decktape`即可．
+
+> 注意点：不可有代理，不然会安装失败，出现`puppeteer@1.9.0 install: node install.js`的错误．
+
+https://github.com/damianavila/RISE/pull/381　jupyter lab 安装rise.
