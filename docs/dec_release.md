@@ -364,3 +364,12 @@ https://cloud.tencent.com/developer/article/1058322 vim 配置．
 gitlab 绑定的pdf.js　不能显示中文，主要针对的是**LaTeX**编译的中文显示．
 
 https://gitlab.com/gitlab-org/gitlab-ee/issues/8267　GitLab官网中提供的一个bug,目前还没有解决．
+
+
+
+计划：
+
+jupyter Lab 更新
+
+docker 容器更新
+
