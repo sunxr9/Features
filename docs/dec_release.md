@@ -415,3 +415,31 @@ conda install -c conda-forge jupyter_nbextensions_configurator
 > 注意点：不可有代理，不然会安装失败，出现`puppeteer@1.9.0 install: node install.js`的错误．
 
 https://github.com/damianavila/RISE/pull/381　jupyter lab 安装rise.
+
+
+
+##### 1227
+
+在需要展示的文件同级目录下创建和文件名称一样的css文件，在其中自定义html样式．
+
+主要点为代码输入框隐藏，因为css优先级的问题，使用**display: none**不可行，最后使用的结果为一下方式：
+
+```css
+.input {
+    position: absolute;
+    top: -99999px;
+    left: -99999px;
+}
+```
+
+将信息定位在页面之外，缺点为在聚焦的时候会出现焦点转移．
+
+
+
+##### 1228
+
+隐藏代码文件加载之后就会一直在，会影响到notebook的显示，需要在推出的时候增加删除加载文件．
+
+尝试增加不可以，加载的样式信息已经在浏览器缓存中，无法清除．
+
+下季度计划要开始了．
