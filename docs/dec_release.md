@@ -443,3 +443,98 @@ https://github.com/damianavila/RISE/pull/381　jupyter lab 安装rise.
 尝试增加不可以，加载的样式信息已经在浏览器缓存中，无法清除．
 
 下季度计划要开始了．
+
+
+
+##### 1229
+
+以编辑模式安装RISE.
+
+```shell
+git clone https://github.com/damianavila/RISE.git
+# 进入包目录
+pip install -e .
+npm install
+npm run build-reveal
+npm run reset-reveal
+npm run build-css
+npm run watch-less
+
+# 启用扩展
+jupyter-nbextension install rise --py --sys-prefix --symlink
+jupyter-nbextension enable rise --py --sys-prefix
+```
+
+在main.js文件增加以下代码，增加一个可动态显示和隐藏代码的图标按钮：
+
+```javascript
+  // add hide botton
+  function cellHide() {
+    var hide_button = $('<i/>').attr('id', 'cell_hide')
+        .attr('title', 'Hide Cell')
+        .addClass('fa fa-eye-slash fa-4x')
+        .css('position', 'fixed')
+        .css('bottom', '0.6em')
+        .css('left', '1.4em')
+        .css('opacity', '0.5')
+        .css('z-index', '30')
+        .click(
+          function () {
+            var tag = $('.input').hasClass('input_hide');
+            if (!tag) {
+              $('.input').addClass("input_hide");
+              hide_button.attr('title', 'Show Cell');
+            } else {
+              $('.input').removeClass('input_hide');
+              hide_button.attr('title', 'Hide Cell');
+            }
+          }
+        );
+    $('.reveal').after(hide_button);
+  }
+
+// 在revealMode() 函数中增加事件．
+  function revealMode() {
+    // We search for a class tag in the maintoolbar to check if reveal mode is "on".
+    // If the tag exits, we exit. Otherwise, we enter the reveal mode.
+    var tag = $('#maintoolbar').hasClass('reveal_tagging');
+
+    if (!tag) {
+      // Preparing the new reveal-compatible structure
+      var selected_slide = markupSlides($('div#notebook-container'));
+      // Adding the reveal stuff
+      Revealer(selected_slide);
+      // Minor modifications for usability
+      setupKeys("reveal_mode");
+      buttonExit();
+      buttonHelp();
+
+      // registed hide botton
+      //　进入展示的时候增加隐藏和展示事件．
+      cellHide();
+
+      $('#maintoolbar').addClass('reveal_tagging');
+    } else {
+      var current_cell_index = reveal_cell_index(Jupyter.notebook);
+      Remover();
+      setupKeys("notebook_mode");
+      $('#exit_b').remove();
+      $('#help_b').remove();
+
+      // remove hide botton;
+      //　退出展示的时候删除隐藏事件．
+      $('#cell_hide').remove();
+      $('#maintoolbar').removeClass('reveal_tagging');
+      // Workaround... should be a better solution. Need to investigate codemirror
+      fixCellHeight();
+      // select and focus on current cell
+      Jupyter.notebook.select(current_cell_index);
+      // Need to delay the action a little bit so it actually focus the selected slide
+      setTimeout(function(){ Jupyter.notebook.get_selected_cell().ensure_focused(); }, 500);
+    }
+  }
+```
+
+不过使用pip安装的RISE nbconfig在线配置不能使用．
+
+reveal.js背景，图的控制，字体大小．字体．
