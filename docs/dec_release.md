@@ -374,7 +374,6 @@ jupyter Lab 更新
 
 docker 容器更新
 
-=======
 ##### 1226
 
 jupyter notebook 启动的时候出现自动打开的不是链接，而是一个文件：
@@ -451,4 +450,3 @@ https://github.com/damianavila/RISE/pull/381　jupyter lab 安装rise.
 尝试增加不可以，加载的样式信息已经在浏览器缓存中，无法清除．
 
 下季度计划要开始了．
->>>>>>> 4f314b1ee4948ac959b3661f25bc5af9165ea7e5
