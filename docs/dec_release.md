@@ -6,7 +6,7 @@ xrandr -q 查看当前的屏幕信息。
 
 xrandr --output [屏幕名称] --off # 关闭命令。
 
-xrandr --output [屏幕名称] --left-of [另一个屏幕名称] --auto
+xrandr --output [扩展屏幕名称] --left-of [当前屏幕名称] --auto
 
 将另一个显示左边，并以扩展显示。
 
