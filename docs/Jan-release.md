@@ -39,3 +39,141 @@ docker 命令：export持久话容器，不是针对的镜像. save是针对持�
 
 保存的文件恢复．
 
+##### 190109
+
+启动容器的时候创建挂载数据卷，尝试进行数据保存，在创建一个新的容器，进行共享．
+
+gitlab的数据保存位置存放在**/var/opt/gitlab**．将容器保存的文件再次使用，启动过程很慢，但是原有的数据还是保存了下来，主要的application 应用的认证还存在．
+
+创建一个新的hub容器，安装认证插件，使用配置文件启动，可以定义gitlab认证，但是nginx代理无法通过，不能使用容器代理．nginx代理容器默认启动可以访问，但是修改代理配置执行启动就不能进行代理，无法进行访问．
+
+**nginx**容器配置注意点
+
+在容器内部的配置文件**proxy_pass**不能使用ｌｏｃａｌｈｏｓｔ，需要宿主机的IP,这样才可以代理出来．
+
+
+
+##### 190110
+
+docker 进入容器的时候指定进入的用户名：
+
+```
+# 使用--user　＜username-用户名＞
+# example 
+docker exec -it --user root <container [name][ID]> /bin/bash
+```
+
+注意gitlab容器生成数据卷保存进行下次使用不可修改权限，特别**注意点为**:隐藏文件．
+
+
+
+ubuntu 系统启动修复：
+
+```
+# https://linuxconfig.org/ubuntu-boot-repair
+# 官网介绍：大概为一下步骤
+# １．使用usb启动，进入试用ｕbuntu,
+# ２．安装boot-repair
+sudo add-apt-repository ppa:yannubuntu/boot-repair
+sudo apt-get update
+sudo apt install boot-repair
+# ３．运行boot-repair选择推荐修复
+boot-repair
+# ４．关机重启，在启动按住(Shift)进入ｕbuntu选择(GRUB)界面，选择中间的高级选项．将会看到不同的内核选项，在每一个内核选项的下面将有一个相同的条目,并带有(recovery mode)．
+# 5. 选择recovery　mode项稍后会弹出新的界面．选择resume项进行修复．
+```
+
+ｕbuntu 安装nvidia显卡驱动：
+
+出现依赖问题：
+
+```
+Some packages could not be installed. This may mean that you have
+requested an impossible situation or if you are using the unstable
+distribution that some required packages have not yet been created
+or been moved out of Incoming.
+The following information may help to resolve the situation:
+
+The following packages have unmet dependencies:
+ nvidia-driver-396 : Depends: nvidia-dkms-396 (= 396.54-0ubuntu0~gpu18.04.1) but it is not going to be installed
+                     Depends: nvidia-utils-396 (= 396.54-0ubuntu0~gpu18.04.1) but it is not going to be installed
+                     Recommends: nvidia-settings but it is not going to be installed
+                     Recommends: nvidia-prime (>= 0.8) but it is not going to be installed
+                     Recommends: libnvidia-compute-396:i386 (= 396.54-0ubuntu0~gpu18.04.1)
+                     Recommends: libnvidia-decode-396:i386 (= 396.54-0ubuntu0~gpu18.04.1)
+                     Recommends: libnvidia-encode-396:i386 (= 396.54-0ubuntu0~gpu18.04.1)
+                     Recommends: libnvidia-ifr1-396:i386 (= 396.54-0ubuntu0~gpu18.04.1)
+                     Recommends: libnvidia-fbc1-396:i386 (= 396.54-0ubuntu0~gpu18.04.1)
+                     Recommends: libnvidia-gl-396:i386 (= 396.54-0ubuntu0~gpu18.04.1)
+E: Unable to correct problems, you have held broken packages.
+```
+
+使用一下步骤进行安装:
+
+```
+sudo apt-add-repository -r ppa:graphics-drivers/ppa
+sudo apt update
+# 删除原有的驱动
+sudo apt remove nvidia*
+sudo apt autoremove
+# 进行安装
+sudo ubuntu-drivers autoinstall
+```
+
+##### 190114
+
+chromium　无法打开，尝试一下方法：
+
+```
+# 删除home目录下的google配置文件．
+# 更新所有软件．
+# 屏幕分辨率的问题，需要重启一下尝试．
+```
+
+重新安装，使用包安装chrome.
+
+```shell
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+# 使用wget下载chrome包．之后使用dpkg安装
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+```
+
+
+
+docker-compose 中network的使用：
+
+```
+version: "3"
+services:
+  test2:
+    image: nginx
+    networks:
+      - default
+      - app_net
+    external_links:
+      - test1
+    container_name: test2
+networks:
+  app_net:
+    external: true
+```
+
+
+
+以上为例：同service级别的networks,主要为网络名称．和网络名称的设置．
+
+上述为app_net的网络名称，　external参数为是否使用外部网络．
+
+> 注意点：文件内部的网络名称在使用外部的网络的情况下需要和外部网络名称一制. docker 会自动寻找网络．
+
+另外在同级别的networks下设置default名称的网络．所有的服务默认都会使用它．
+
+server下的test2中的networks设置为使用的网络名称．此网络名称不限于本文件中名称的网络名称．还可以使用docker中默认的网络名称．
+
+##### 190115
+
+镜像成功，但是因为在源码中增加了中午，在镜像中启动的时候出现了乱码．不识别的现象，需要重新构建镜像．
+
+构建的时候发现nbviewer不是最新版，在github上拉取最新源代码再次构建．
+
+使用nginx代理的访问会出现静态文件不能加载，只能在使用端口的访问方式．
