@@ -4,7 +4,7 @@
 
 ​	一体机部署为集成以及整合，开发，修改的功能．目前主要有Jupyter在线分析平台(Jupyter Notebook, Jupyter Lab)，JupyterHub多用户认证管理服务，NBViewer报告展示服务，GitLab项目规划和源代码管理工具．Nginx网站负载均衡调度工具．
 
-​	主要目标为部署的步骤简化，可复用性．便于实施的部署指导．实现快速可复制的部署一体机．
+​	[one_machine](http://106.15.198.200/lab_dev/one_machine)项目主要目标为部署的步骤简化，可复用性．便于实施的部署指导．实现快速可复制的部署一体机．项目中提供了JupyterHub，Nginx, GitLab的默认配置．
 
 ## 技术主体
 
@@ -31,10 +31,6 @@
 #### 使用要点
 
 ​	修改配置文件，
-
-## 项目地址
-
-[one_machine](http://106.15.198.200/lab_dev/one_machine)项目地址．提供了部署指导以及一体机默认配置．
 
 ## 1. Docker使用
 
