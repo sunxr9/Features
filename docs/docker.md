@@ -1,16 +1,16 @@
 ### docker
 
-独立进程， 组件： （完整的操作系统，只读）镜像， （来运行）容器，仓库（存放地）
+独立进程， 组件： （完整的操作系统，只读）镜像， （运行中的镜像）容器，仓库（存放地）
 
 docker search 镜像名称
 
 docker pull 镜像名称
 
-docker images  查看镜像
+docker images  查看所有镜像，等同与docker image ls 
 
-镜像名称， 镜像标签， 镜像ID，时间，镜像大小
+上述命令的输出列名为：镜像名称， 镜像标签， 镜像ID，时间，镜像大小
 
-docker rmi 删除镜像
+docker rmi 删除镜像，等同于docker image rm [imageName]
 
 docker run 镜像名称  <镜像路径> ‘’
 
