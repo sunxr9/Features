@@ -134,6 +134,26 @@ Ubuntu安装[Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/)参
 
 ​	除了官方的 Docker Registry 外，还有第三方软件实现了 Docker Registry API，甚至提供了用户界面以及一些高级功能。比如，[VMWare Harbor](https://github.com/goharbor/harbor) 和 [Sonatype Nexus](https://yeasy.gitbooks.io/docker_practice/repository/nexus3_registry.html)。
 
+#### 4. 应用数据
+
+Docker在默认情况下，应用的所有数据都之后存储在可写层中。所以会出现一下情况：
+
+1. 数据不会持久存在，随容器消失而消失。
+2. 与容器紧密耦合，无法轻松转移数据。
+3. 写入容器需要liunx内核提供联合文件系统，这样额外的降低了性能。
+
+##### 解决方案
+
+**volumes(卷)**：由Docker创建和管理。储存在(在linux下`/var/lib/docker/volumes`),是Docker中保留数据的最佳方式，但也是最为复杂的。
+
+**mount（挂载）**：可以存储在主机系统的任何位置，Docker进程和非Docker进程都可以随时修改他们。只需要在启动容器的时候使用`-v`参数即可将主机上的文件挂载至容器内部。例如定制`jupyterhub`镜像的启动配置，主机的任何位置编写jupyterhub_config.py文件，即可通过`-v`命令挂载至容器内部指定位置：
+
+````
+docker run -p 8000:8000 -v /path/to/jupyterhub_config.py:/etc/jupyterhub/jupyterhub_config.py jupyterhub
+````
+
+**tmpfs挂载**：`tmpfs`挂载不会保留在磁盘上，无论是在Docker主机上还是在容器中。它可以在容器的生命周期中由容器使用，以存储非持久状态或敏感信息。例如，在内部，swarm服务使用`tmpfs`挂载将秘密挂载到服务的容器中。
+
 ### 3. Docker 镜像构建，分享以及获取
 
 #### 构建
@@ -422,9 +442,104 @@ ARG user1=someuser
 ARG buildno=1
 ```
 
+### 4. docker 运行
 
+#### 启动容器
 
-### 4. Docker 常用命令和说明
+`docker run`指令启动容器：
+
+```
+# docker run 镜像名称
+docker run jupyterhub
+```
+
+#### 查看运行容器
+
+`docker ps `查看运行容器，在没有参数的情况下，默认只显示最近启动的容器，
+
+`-a`参数查看所有容器。
+
+`-l`查看在运行容器。
+
+> 注意：请注意默认生成的容器名称。
+
+#### 停止容器
+
+`docker stop [容器名称]`指令停止正在运行的容器。
+
+> 注意: 此处的容器名称在未使用`-n`或`--name` 指定的情况下，需要使用上述指令查看容器名称，
+
+#### 指定容器名称
+
+`-n`或`--name`参数指定容器运行名称。
+
+```
+# docker run -n name 镜像名称
+docker run -n jupyterhub jupyterhub
+```
+
+#### 指定端口启动
+
+使用`-p`参数指定端口启动，可多此次使用。
+
+```
+# docker run -p 主机端口:容器内部端口 镜像名称
+docker run -p 8000:8000 jupyterhub
+```
+
+> 注意：请注意容器内部端口为EXPOSE指定的暴露端口，一般设置为熟知端口，比如`nginx`为80端口，所以我们只需要将主机端口对应的80端口映射至容器内部80端口即可。
+
+#### 挂载数据启动
+
+使用`-v`参数指定挂载文件或目录。
+
+```
+# docker run -p 主机端口：容器内部端口 -v 主机路径：容器内部路径 镜像名称
+docker run -p 8000:8000 -v /etc/jupyterhub:/etc/jupyterhub jupyterhub
+```
+
+> 注意：挂载的目录的情况下，主机路径的最后不可为**`/`**符号（liunx环境下）
+
+#### 守护进程运行
+
+`-d`参数。
+
+```
+# docker run -d -p 主机端口：容器内部端口 -v 主机路径：容器内部路径 镜像名称
+docker run -d -p 8000:8000 -v /etc/jupyterhub:/etc/jupyterhub jupyterhub
+```
+
+#### 非守护进程启动
+
+`-i -t`参数，可简写为`-it`.
+
+```
+# docker run -it -p 主机端口：容器内部端口 -v 主机路径：容器内部路径 镜像名称
+docker run -it -p 8000:8000 -v /etc/jupyterhub:/etc/jupyterhub jupyterhub
+```
+
+#### 进入容器
+
+1.  `docker exec `指令.
+
+   ```
+   # docker exec -it 容器名称 执行的命令
+   docker exec -it 容器名称 /bin/bash
+   ```
+
+2. `docker attch`指令。
+
+   ```
+   # docker attch 容器名称
+   ```
+
+#### 退出容器
+
+1. `docker exec`指令进入容器类似于`ssh`登录，可以使用`exit`命令退出，并不会影响容器的运行，但是不能停止容器内运行的应用程序。
+
+2. `docker attch`指令进入容器不可以使用使用上述方式退出，想要在不影容器运行的情况下退出只能使用`ctrl + q`方式退出。
+
+### 5. Docker 常用命令和说明
 
 参见docker文件．
 
