@@ -129,7 +129,25 @@ docker-compose --version
 # docker-compose version 1.23.2, build 1110ad01
 ```
 
-## 3. 修改
+### 使用详情
+
+参考docker-use文件docker-compose配置详情．
+
+## 3. 获取项目
+
+```shell
+git clone http://106.15.198.200/sunxr/test.git
+```
+
+## 4. 运行准备
+
+### 配置Jupyterhub
+
+定义配置文件主要是自定义Jupyterhub启动选项，其中主要为选择认证方式，默认配置文件中携带的为使用GitLab认证方式，
+
+Jupyterhub配置项目中默认携带以下配置文件：
+
+
 
 
 

@@ -600,7 +600,7 @@ CMD ["python", "app.py"]
 
 ##### docker-compose.yml
 
-编写 `docker-compose.yml` 文件，这个是 Compose 使用的主模板文件。
+编写 `docker-compose.yml` 文件，这个是 Compose 使用的一个简单配置文件。
 
 ```yaml
 version: '3'
@@ -623,78 +623,20 @@ $ docker-compose up
 
 此时访问本地 `5000` 端口，每次刷新页面，计数就会加 1。
 
-#### docker-compose 命令说明：
+#### docker-compose 说明：
 
 由`Docker-compose`简述中了解到，compose文件中主要有两个部分，服务(servers)和项目(projects)．以上述的`docker-compose.yml`为例，项目为`servers`关键词开始，在项目中运行名为`web`和`redis`的两个服务．
+
+> 请严格遵循[YAML](https://yaml.org/spec/1.0/)语法．
 
 ​	在两个服务中只有最简单的配置，`web`服务提够了构建服务，并指定容器暴露端口．`redis`服务指定使用镜像名称．
 
 > **注**:　`docker-compose`中的构建依赖于`Dockerfile`文件,不是独立存在．
 
-#### 案例：
+​	在服务中可定义以下选项以及简要说明，详情参考[官方文档](https://docs.docker.com/v17.09/compose/overview/)：
 
-```
-version: "2"
++ `build`
 
-services:
-  hub-db:
-    image: postgres:9.5
-    container_name: jupyterhub-db
-    restart: always
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: ${DB_VOLUME_CONTAINER}
-    env_file:
-      - secrets/postgres.env
-    volumes:
-      - "db:${DB_VOLUME_CONTAINER}"
-
-  hub:
-    depends_on:
-      - hub-db
-    build:
-      context: .
-      dockerfile: Dockerfile.jupyterhub
-      args:
-        JUPYTERHUB_VERSION: ${JUPYTERHUB_VERSION}
-    restart: always
-    image: jupyterhub
-    container_name: jupyterhub
-    volumes:
-      # Bind Docker socket on the host so we can connect to the daemon from
-      # within the container
-      - "/var/run/docker.sock:/var/run/docker.sock:rw"
-      # Bind Docker volume on host for JupyterHub database and cookie secrets
-      - "data:${DATA_VOLUME_CONTAINER}"
-    ports:
-      - "443:443"
-    links:
-      - hub-db
-    environment:
-      # All containers will join this network
-      DOCKER_NETWORK_NAME: ${DOCKER_NETWORK_NAME}
-      # JupyterHub will spawn this Notebook image for users
-      DOCKER_NOTEBOOK_IMAGE: ${LOCAL_NOTEBOOK_IMAGE}
-      # Notebook directory inside user image
-      DOCKER_NOTEBOOK_DIR: ${DOCKER_NOTEBOOK_DIR}
-      # Using this run command (optional)
-      DOCKER_SPAWN_CMD: ${DOCKER_SPAWN_CMD}
-      # Postgres db info
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_HOST: hub-db
-    env_file:
-volumes:
-  data:
-    external:
-      name: "jupyterhub-data"
-networks:
-  default:
-    external:
-      name: ${DOCKER_NETWORK_NAME}
-```
-
-
-
-
+  指定`Dockerfile`所在目录的路径(相对路径绝对路径都可)．`Compose`将利用它自动构建镜像并使用．
 
 ​	
