@@ -639,4 +639,85 @@ $ docker-compose up
 
   指定`Dockerfile`所在目录的路径(相对路径绝对路径都可)．`Compose`将利用它自动构建镜像并使用．
 
-​	
+​	服务容器一旦构建后，将会带上一个标记名，例如`servers`服务中的web容器，那标记就可能为`servers_web`．
+
++ command
+
+  用于覆盖容器启动时默认执行的命令．如:
+
+  ```
+  # jupyterhub容器的默认指令是
+  command:
+    jupyterhub -f /etc/jupyterhub/jupyterhub_config.py
+  ```
+
+  我们可通过`command`来自定义指定启动命令，例：
+
+  ```
+  # 改变启动的的时候读取的配置文件目录
+  command:
+    jupyterhub -f /home/name/jupyterhub_config.py
+  ```
+
++ container_name
+
+  指定容器名称。默认将会使用 `项目名称_服务名称_序号`．
+
++ devices
+
+  指定设备映射关系．如：
+
+  ```
+  devices:
+    - "/dev/USB1:/dev/USB0"
+  ```
+
++ depends_on
+
+  解决容器之间的依赖，启动的先后问题．在选项中只需要按照想要的启动顺序一次填写即可，如：
+
+  ```
+  depends_on:
+    - mysql
+    - redis
+  # 例子中会先启动mysql,在启动redis.
+  ```
+
++ dns
+
+  自定义`DNS`服务器．可以是一个值，也可是列表．
+
++ tmpfs
+
+  挂载一个tmpfs文件系统到容器．
+
++ env_file
+
+  从文件中获取环境变量，可以为单独的文件路径或列表．如：
+
+  ```
+  # 独立文件
+  env_file: .env
+  
+  # 多个路径
+  env_file:
+    - ./apps/web.env
+    - /opt/secrets.env
+  ```
+
++ environment
+
+  设置环境变量．可使用数组或字典两种格式．只给定名称的变量会自动获取运行Compose主机上的对应变量值，可用来在`docker-compose`文件中隐藏变量值．
+
+  ```
+  # 字典
+  environment:
+    RACK_ENV: development
+    SESSION_SECRET:
+  # 数组
+  environment:
+    - RACK_ENV=development
+    - SESSION_SECRET
+  ```
+
+  
