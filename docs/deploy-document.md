@@ -85,8 +85,9 @@ Docker version 18.09.1, build 4c52b90
 
 Ubuntu安装[Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/)参考．
 
-## 2. Docker-compose环境配置
+最后使用`CTRL + c`停止容器运行。
 
+## 2. Docker-compose环境配置
 ### Docker-compose
 
 实现对 Docker 容器集群的快速编排与操作．
