@@ -275,7 +275,7 @@ python                   2.7-slim            1c7128a655f6        5 days ago     
 将标记的图像上传到存储库：
 
 ```shell
-docker push username/repository:tag
+docker push username/imageName:tag
 ```
 
 示例：
@@ -303,7 +303,7 @@ docker　run -p 4000:80 username/repository:tag
 docker pull 示例：
 
 ```shell
-docker pull username/repository:tag
+docker pull username/imageName:tag
 ```
 
 docker run 示例：
@@ -719,5 +719,285 @@ $ docker-compose up
     - RACK_ENV=development
     - SESSION_SECRET
   ```
+
+
+> 注：如果在env文件中的变量名称与enviroment指令相冲突，则以后者为准．
+
++ expose
+
+  暴露端口，但不映射到宿主机，只被链接的服务访问．仅可以制定内部端口为参数．
+
+  ```
+  expose:
+    - "3000"
+    - "8000"
+  ```
+
++ external_links
+
+  链接到`docker-compose.yml`外部的容器，甚至并非`Compose`管理的外部容器．
+
+  ```
+  external_links:
+    - redis_1
+    - project_db_1: mysql
+    - project_db_1: postgresql
+  ```
+
++ extra_hosts
+
+  添加容器内部的host名称映射信息，类似Docker中的`--add-host`参数．
+
+  ```
+  extra_hosts:
+    - "googleedns:8.8.8.8"
+  ```
+
+  会在启动之后在容器内部的`/etc/hosts`文件中添加如下条目:
+
+  ```
+  8.8.8.8 googleedns
+  ```
+
++ healthcheck
+
+  通过命令检查容器的运行：
+
+  ```
+  healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost"]
+    interval: 1m30s
+    timeout: 10s
+    retries: 3
+  ```
+
++ image
+
+  指定使用的镜像名称或镜像ID．如果本地不存在，`Compose`将会尝试获取这个镜像．
+
++ labels
+
+  为容器添加Docker元数据信息，例如可以容器添加辅助说明信息．
+
++ logging
+
+  配置日志选项：
+
+  ```
+  logging:
+    driver: syslog
+    options:
+    syslog-address: "tcp://192.168..0.42:1000"
+  ```
+
+  目前支持三种日志驱动类型：
+
+  ```
+  driver: "json-file"
+  driver: "syslog"
+  driver: "none"
+  ```
+
+  `options`配置日志驱动的相关参数：
+
+  ```
+  options:
+    max-size: "200k"
+    max-file: "10"
+  ```
+
++ network_mode
+
+  设置网络模式，和`docker run`指令启动是制定的`--network`参数是一致的．
+
+  ```
+  network_mode: "bridge"
+  network_mode: "host"
+  network_mode: "none"
+  network_mode: "service:[service name]"
+  network_mode: "container:[container name/id]"
+  ```
+
++ networks:
+
+  配置容器连接的网络．
+
+  ```
+  version: "3"
+  services:
+  
+    some-service:
+      networks:
+       - some-network
+       - other-network
+  
+  networks:
+    some-network:
+    	external: true
+    	
+    other-network:
+  ```
+
+  > 注：在项目中(`servers`同级的networks)为定义　需要使用的网络名称和网络配置，在本地没有的情况，Docker会自行创建网络．
+  >
+  > 在服务中的`networks`为指定需要使用的网络名称．
+
++ pid
+
+  跟主机系统共享进程命名空间．打开该选项的容器之间以及容器和宿主机系统之间可以通过进程ID来相互访问和操作．
+
+  ```
+  pid: "host"
+  ```
+
++ ports
+
+  映射容器在宿主机上的通信的端口．
+
+  格式为： 宿主机端口：容器端口(HOST: CONTAINER)格式，或者仅仅指定容器的端口（宿主机将会随机选择端口）．
+
+  ```
+  ports:
+    - "2000"
+    - "3000:3000"
+    - "4000:80"
+    - "127.0.0.1:5000:5000"
+  ```
+
++ secrets
+
+  存储敏感数据．
+
+  ```
+  version: "3.1"
+  services:
+  
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    secrets:
+      - db_root_password
+      - my_other_secret
+  
+  secrets:
+    my_secret:
+      file: ./my_secret.txt
+    my_other_secret:
+      external: true
+  ```
+
++ security_opt
+
+  指定容器模板标签（label）机制的默认属性（用户，角色，类型，级别等），例如配置标签的用户名和角色名：
+
+  ```
+  security_opt:
+    - label:user:USER
+    - label:role:ROLE
+  ```
+
++ stop_signal
+
+  设置另一个信号来停止容器．在默认情况下使用的是SIGTERM停止容器．
+
+  ```
+  stop_signal: SIGUER1
+  ```
+
++ ulimits
+
+  指定容器的ulimits限制值．例如，指定最大进程数65535,指定文件句柄数为20000(软限制，应用可以随时修改，不能超过硬限制)和40000（系统硬限制，只能root用户提供）．
+
+  ```
+  ulimits:
+    nproc: 65535
+    nofile:
+      soft: 20000
+      hard: 40000
+  ```
+
++ volumes
+
+  数据卷所挂载的路径设置．可以设置素主机路径（HOST：CONTAINER）或加上访问模式(HOST:CONTAINER:ro)．
+
+  ```
+  volumes:
+    - /var/lib/mysql
+    - cache:/tmp/cache
+    - ~/configs:/etc/configs:ro
+  ```
+
+  > 注: 该指令中路径支持相对路径．不推荐在容器内部的使用相对路径．
+
++ 其他说明
+
+  此外`docker run`中对应的参数同样可以在文件中配置．
+
+  + 指定服务容器启动后执行的入口文件．
+  ```
+    entrypoint: /code/entrypoint.sh
+  ```
+
+  + 指定容器中运行应用的用户名.
+
+  ```
+  user: username
+  ```
+
+  + 指定容器内部工作目录
+
+  ```
+  working_dir: /home/name
+  ```
+
+  + 指定容器内搜素域名，主机名，mac地址等．
+
+  ```
+  domainname: your_website.com
+  hostname: test
+  mac_address: 08-00-27-00-0C-0A
+  ```
+
+  + 允许容器中运行一些特权命令。
+
+  ```yaml
+  privileged: true
+  ```
+
+  + 指定容器退出后的重启策略为始终重启。该命令对保持服务始终运行十分有效，在生产环境中推荐配置为 `always` 或者 `unless-stopped`。
+
+  ```yaml
+  restart: always
+  ```
+
+  + 以只读模式挂载容器的 root 文件系统，意味着不能对容器内容进行修改。
+
+  ```yaml
+  read_only: true
+  ```
+
+  + 打开标准输入，可以接受外部输入。
+
+  ```yaml
+  stdin_open: true
+  ```
+
+  + 模拟一个伪终端。
+
+  ```yaml
+  tty: true
+  ```
+
+  + 读取系统的环境变量和当前目录的`.env`文件中的变量．
+
+  ```
+  version: "3"
+  services:
+  db:
+    image: "mongo:${MONGO_VERSION}"
+  ```
+
+  
 
   
