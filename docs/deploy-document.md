@@ -273,6 +273,8 @@ username
 username admin
 ```
 
+> 注：在服务启动之后添加的管理员和白名单需要重启才能生效．
+
 ### 配置NBViewer
 
 NBViewer没有配置文件，它的配置信息只需要在`docker-compose`文件中nbviewer服务中`command`选项修改即可．`docker-compose`文件中默认启动配置如下：
@@ -325,6 +327,8 @@ Nginx主要配置代理服务，在项目`Nginx/nginx.conf`文件中，只需要
 
 在nginx配置文件中只有上述两处为`IP`设置，所以只需要修改这两处即可．
 
+这是在声明Nginx需要将见听到请求转接至什么地址和端口．
+
 
 
 ### 配置GitLab
@@ -335,9 +339,30 @@ GitLab配置文件在本项目中的`gitlab/config/gitlab.rb `文件中，目前
 
 而邮箱配置需根据需求自行填写，官方的邮箱配置案例很详细，在此不做说明，自行参考[GiLabSMTP设置](https://docs.gitlab.com/omnibus/settings/smtp.html)．
 
-
+> 在首次登录认真的时候还需要将GitLab中Application设置中`jupyterhub`应用的回购网址修改为当前服务的IP地址．
 
 ### docker-compose文件配置说明．
 
 本项目的`docker-compose`配置中定义了四个服务，分别是nginx, jupyterhub, nbviewer,gitlab.
+
+nginx定义了使用的镜像名称，运行时的名称，端口的映射，配置文件的映射．
+
+jupyterhub定义了使用的镜像名称，运行是的容器名称，端口的映射，配置文件的映射，cookie数据的映射，docker运行套接字的映射，环境变量的配置，执行命令的覆写和网络的使用．
+
+> Jupyterhub环境变量说明：由于需要使用GitLab提供认证，Docker提供单用户服务器，所以自定义的容器内部增加了`oauthenticator`和`dockerspawner`两个插件．而`oauthenticator`默认会跳转至GitLab官方网址，所以我们需要添加一个环境变量，告诉去哪进行认证操作．
+
+> 同时我们还需要告诉Jupyterhub创建的容器使用的网络，这样创建的容器在使用相同网络的情况下，更好的与Jupyterhub容器之间的通信．同时，我们还需要告诉使用的容器名称和用户的工作目录．
+
+> 以上述而言，总共有四个环境变量，但是请注意环境变量的名称，例：
+>
+> ```
+> GITLAB_URL: "http://192.168.3.20:7000/"
+> DOCKER_NOTEBOOK_IMAGE: "sunxr/dass:V0.5"
+> DOCKER_NETWORK_NAME: "jupyterhub-network"
+> DOCKER_NOTEBOOK_DIR: "/home/jovyan/work"
+> ```
+
+nbviewer定义使用的镜像名称，运行时的容器名称，端口的映射，数据的存放位置，网络模式的使用，启动命令的覆写．
+
+gitlab定义使用的镜像名称，运行是的容器名称，端口的映射，数据文件，配置文件，日志的映射以及网络的使用．
 
