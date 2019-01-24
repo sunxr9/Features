@@ -366,8 +366,6 @@ gitlab 绑定的pdf.js　不能显示中文，主要针对的是**LaTeX**编译�
 https://gitlab.com/gitlab-org/gitlab-ee/issues/8267　GitLab官网中提供的一个bug,目前还没有解决．
 
 
-
-<<<<<<< HEAD
 计划：
 
 jupyter Lab 更新
