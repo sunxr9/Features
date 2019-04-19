@@ -67,6 +67,8 @@
    conninfo
    # 查看当前数据库的所有表格
    \d
+   查看表结构
+   \d table_name
    ```
 
    
@@ -528,4 +530,44 @@ start.sh脚本内容不变．
 
 修改`/etc/rc.local`文件，将前面的`/bin/sh`移除，直接运行start.sh文件．
 
-最终问题在与代码错误，在配置`supervisord`开机自启的时候，还没有真中启动完成，`supervisor`就会启动，所以无法获取到环境变量，导致程序意外终止．修改代码，将配置文件获取方式修改．
+最终问题在与代码错误，在配置`supervisord`开机自启的时候，还没有真正启动完成，`supervisor`就会启动，所以无法获取到环境变量，导致程序意外终止．修改代码，将配置文件获取方式修改．
+
+
+
+##### 190321
+
+##### 190325
+
+修改温度获取的关键词，还有时间显示的格式
+
+1553504150493
+
+
+
+##### 190326
+
+redmine　发送邮件附带的URL地址不对修改方法：
+
+admin登录→配置→主机名称，改为域名或[IP](https://www.baidu.com/s?wd=IP&tn=SE_PcZhidaonwhc_ngpagmjz&rsv_dl=gh_pc_zhidao)的形式，缺省是localhost
+
+
+
+##### 190328
+
+selenium 控制chrome浏览器需要chromedriver插件：安装方式如下：
+
+手动下载插件地址：https://sites.google.com/a/chromium.org/chromedriver/home
+
+下载linux版，之后进行解压操作．
+
+然后将chromedriver 插件移动至`/usr/bin/`下，注意名称还是`chromedriver`，不可以错．
+
+然后将文件权限交给root: `sudo chown root:root /usr/bin/chromedriver`
+
+添加可执行权限：`sudo chmod +x /usr/bin/chromedriver`到此就可以了．
+
+
+
+##### 190329
+
+设备建立完成，实体别名建立完成．

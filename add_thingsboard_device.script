@@ -1,0 +1,89 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+Automatically add device scripts
+"""
+import time
+
+from selenium import webdriver
+
+
+DRIVER_URL = "http://139.224.9.212:8080/devices"
+
+LOGIN_URL = "http://139.224.9.212:8080/login"
+
+def linkThinsboard():
+    browser = webdriver.Chrome()
+    # open thingsboard URL
+    browser.get(DRIVER_URL)
+    time.sleep(10)
+    login = ifLogin(browser)
+    if login:
+        browser.get(DRIVER_URL)
+    else:
+        pass
+    # click add driver button
+    
+    
+    # input device name and type
+    for i in range(28, 37):
+        time.sleep(2)
+        add_button = browser.find_element_by_xpath("//ng-md-icon[@icon='add']")
+        add_button.click()
+        # device name and type
+        device_name = browser.find_element_by_xpath("//form[@name='theForm']\
+                                                    /md-dialog-content/div\
+                                                    /tb-device/md-content\
+                                                    /fieldset/md-input-container\
+                                                    /input")
+        device_type = browser.find_element_by_xpath("//form[@name='theForm']\
+                                                    /md-dialog-content/div\
+                                                    /tb-device/md-content\
+                                                    /fieldset\
+                                                    /tb-entity-subtype-autocomplete\
+                                                    /md-autocomplete\
+                                                    /md-autocomplete-wrap\
+                                                    /md-input-container/input")
+        
+        time.sleep(2)
+        device_name.send_keys("dht-demo-"+str(i))
+        
+        time.sleep(2)
+        device_type.send_keys("DHT22")
+        time.sleep(2)
+        device_type.submit()
+        time.sleep(10)
+        # share
+        
+    browser.close()
+    return "ADD SUCCESS"
+    
+    
+    
+def ifLogin(browser):
+    try:
+        sign_in = browser.find_element_by_xpath("//span[@class='ng-binding ng-scope']")
+    except Exception as e:
+        pass
+    finally:
+        
+        if sign_in:
+            browser.get(LOGIN_URL)
+            time.sleep(5)
+            name = browser.find_element_by_id("username-input")
+            passwd = browser.find_element_by_id("password-input")
+            
+            # input username and password
+            name.send_keys("fs@lab.com")
+            passwd.send_keys("123456")
+            passwd.submit()
+            time.sleep(5)
+            return True
+            
+        else:
+            return False
+        
+if __name__ == "__main__":
+    print(linkThinsboard())
+    
