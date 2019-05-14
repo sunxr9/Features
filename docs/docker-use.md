@@ -250,7 +250,7 @@ Docker Registry是存储库的集合，存储库是图像的集合 - 类似于Gi
 现在使用命令来标记镜像，docker tag image 使用您的用户名，存储库和标记名称来运行，以便将图像上传到所需的目标位置，该命令的语法示例：
 
 ```shell
-docker tag image username/imageName:tag
+docker tag image register/username:tag
 ```
 
 为上述构建的镜像做标记：
@@ -275,7 +275,7 @@ python                   2.7-slim            1c7128a655f6        5 days ago     
 将标记的图像上传到存储库：
 
 ```shell
-docker push username/imageName:tag
+docker push register/username:tag
 ```
 
 示例：
@@ -295,7 +295,7 @@ docker push sunxr/hello:V1.0.0
 现在开始，可以使用`docker run`命令在任何计算机上使用和运行上述的应用程序．
 
 ```shell
-docker　run -p 4000:80 username/repository:tag
+docker　run -p 4000:80 register/username:tag
 ```
 
 如果镜像不在需要运行的计算机上，Docker则会自行从存储库中拉取镜像．我们也可以自行使用`docker pull`自行拉取，完成后执行上述命令进行运行．
@@ -303,7 +303,7 @@ docker　run -p 4000:80 username/repository:tag
 docker pull 示例：
 
 ```shell
-docker pull username/imageName:tag
+docker pull register/username:tag
 ```
 
 docker run 示例：
