@@ -655,7 +655,7 @@ https://blog.csdn.net/sinat_19259775/article/details/77520472
 1，创建虚拟机：
 
 	VBoxManage createvm --name '虚拟机名字' --ostype ubuntu_64 --register 
-
+	
 	指定--ostype参数，可以为新的虚拟机使用默认参数，可以使用VBoxmanage list ostypes 查看支持的操作系统。
 
 2， 为虚拟机制定设置信息：
@@ -1181,7 +1181,7 @@ nginx：apt install nginx
                                                           
 ```
 
-                                                  
+​                                                  
 
 
 
@@ -1427,12 +1427,12 @@ unable to lock the administration directory (var/lib/dpkg). is another process u
  	sudo rm /var/lib/apt/lists/lock
 
 	sudo rm /var/cache/apt/archives/lock
-
+	
 	之后更新包源列表：sudo apt update && sudo apt-get upgrade.
 
 
 
-​
+
 
 ##### 0731
 
@@ -1469,9 +1469,9 @@ SQLAlchemy 连接数据库
 class user（declarative_base):
 
 	__tablename__ = 'users'
-
+	
 	ID = Column(Integer， permary_key=True)
-
+	
 	Foreign_ID = Column(Integer)
 
 迁移函数：
