@@ -225,7 +225,7 @@ pip install psutil
 pip +git 安装：
 
 ```
-pip install git+https://github.com/influxdata/influxdb-python.git  == 5.2.0
+pip install git+https://github.com/influxdata/influxdb-python.git=5.2.0
 ```
 
 theano : 注意需要gcc 倚赖项。
