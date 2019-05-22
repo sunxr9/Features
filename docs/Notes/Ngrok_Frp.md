@@ -23,7 +23,7 @@
 
 出现如下图内容：
 
-![1557478627086](/home/sunxr/git_data/test/docs/image/1557478627086.png)
+![1557478627086](../image/ngork-example.png)
 
 复制图中`Forwarding`项的地址，作为ssh链接地址，端口为链接代理端口，链接案例：
 
