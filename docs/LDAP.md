@@ -297,7 +297,7 @@ LDAP 服务对系统环境要求不高，但在生产环境中，应该最少是
 
 #### 安装 LDAP
 
-```
+```bash
 yum -y install openldap openldap-* --skip-broken
 yum -y install nscd nss-pam-ldapd nss-* pcre pcre-* --skip-broken
 ```
@@ -311,7 +311,79 @@ You could try running : rpm -Va --nofiles --nodingest.
 
 单独安装`nss-*`:
 
+```bash
+yum install nss-* -y 
+# or
+yum install nss -y
 ```
+
+```bash
+# 更新
+yum update nss-softokn-freebl
+# 安装
 yum install nss-* -y 
 ```
+
+**注**：OpenLDAP 2.3 的配置文件为`/etc/openldap/slapd.conf`,而2.4 的配置文件在`/etc/openldap/slapd.d/en=conf`下。而 `slapd.conf` 可以支撑两个版本的使用。
+
+#### 配置管理员密码
+
+使用 `slappasswd` 命令设置密码，首先使用`slappasswd -h` 查看帮助文档。其中 `-s`选项为设置密码，在参数后直接指定密码，此命令将返回加密后的密码。
+
+同时 `slappasswd` 命令不带参数执行默认也可以执行设置密码。但需要在命令行中按照提示进行输入。
+
+有关 OpenLDAP 2.3 和 2.4 版本配置文件以及数据格式的区别，参考 OpenLDAP [官方说明](http://www.openldap.org/doc/admin24/slapdconf2.html)
+
+
+#### 配置 LDAP 其他关键参数
+
+备份现有配置文件：
+
+```bash
+cp slapd.conf slapd.conf.backup
+```
+
+完成备份文件后编辑 LDAP 配置文件:
+
+```bash
+vim slapd.conf
+```
+
+注释掉以下信息：
+
+```conf
+database    bdb
+suffix      "dc=my-domain,dc=com"
+checkpoint  1024 15
+rootdn      "cn=Manager,dc=my-domain,dc=com"
+```
+
+注释完成后，在以上内容后添加一下信息：
+
+```conf
+database    bdb
+suffix      "dc=domain,dc=com"
+rootdn      "cn=admin,dc=domain,dc=com"
+```
+
+**提示**： 配置文件中的先后位置不要随意动，空行和“#”开头的注释行将被忽略，如果一行以空格开头，它将被认为是接着前一行的（即使前一行是注释）。
+
+#### 检查所修改的配置
+
+使用 `diff` 命令对比修改前和修改后的文件：
+
+```bash
+diff slapd.conf.backup slapd.conf
+```
+
+#### 更多 LDAP 参数配置
+
++ 日志及缓存配置优化
+    ```conf
+    loglevel    296
+    cachesize   1000
+    chechpoint  2048    10
+    ```
+
+
 
