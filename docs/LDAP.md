@@ -280,7 +280,7 @@ LDAP 服务对系统环境要求不高，但在生产环境中，应该最少是
    添加DNS 解析地址到`/etc/hosts`文件：
 
    ```bash
-   echo "IP Address domain" >> /etc/hosts
+   echo "[IP Address] [domain]" >> /etc/hosts
    ```
 
    检查`hosts`是否有写入内容：
@@ -296,4 +296,22 @@ LDAP 服务对系统环境要求不高，但在生产环境中，应该最少是
    ```
 
 #### 安装 LDAP
+
+```
+yum -y install openldap openldap-* --skip-broken
+yum -y install nscd nss-pam-ldapd nss-* pcre pcre-* --skip-broken
+```
+
+如出现以下错误：
+
+```
+You could try using --skip-broken to work around the problem.
+You could try running : rpm -Va --nofiles --nodingest.
+```
+
+单独安装`nss-*`:
+
+```
+yum install nss-* -y 
+```
 

@@ -219,6 +219,83 @@ ubuntu18.04 install mysql 5.7
 
 
 
+##### 190523
+
+卸载 Playonlinux 
+
+```
+sudo apt purge playonlinux
+sudo apt autoremove
+sudo apt autoclean
+```
 
 
+
+安装wine
+
+```
+sudo dpkg --add-architecture i386
+wget -qO- https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add  - 
+sudo apt-add-repository 'deb http://dl.winehq.org/wine-builds/ubuntu/ bionic main'
+
+```
+
+
+
+卸载 wine 和 playonlinux
+
+```
+sudo apt purge wine* playonlinux* 
+sudo apt autoremove
+rm -rf ~/.wine ~/.Playonlinux
+
+```
+
+
+
+安装　bcloud 私人写的一个百度网盘的ｕbuntu 客户端，
+
+```bash
+sudo apt install bcloud
+```
+
+等待安装完成，执行`bcloud-gui`启动．
+
+出现以下报错：
+
++ 没有 bcloud 模块，解决：使用pip search 搜索当前名称，找到描述相符的进行安装．
++ 没有 gi 模块，解决：使用 conda 进行安装 `conda install -c conda-forge pygobject`
+
++ 导入错误，gi 模块没有GDK．没有解决，放弃
+
+
+
+使用 [deepin-wine-ubuntu](<https://github.com/wszqkzqk/deepin-wine-ubuntu>)：
+
+```
+# 在线安装
+wget -qO- https://raw.githubusercontent.com/wszqkzqk/deepin-wine-ubuntu/master/online_install.sh | bash -e
+```
+
+安装完成之后，自己下载发布的deb包，使用dpkg -i 进行直接安装就可以使用了．
+
+
+
+本地　redmine　密码：　yuhan123456 
+
+ubuntu 18 install ldap
+
+```bash
+sudo apt install slapd ldap-utils
+```
+
+上述命令需要配置管理员密码．
+
+完成之后需要修改默认目录树信息，执行以下命令重置配置：
+
+```
+sudo dpkg-reconfigure slapd
+```
+
+第一个问题选择否（省略初始配置），然后设置DNS 名称，然后系统将要求配置组织名称，然后输入管理员密码进行确认．完成之后选择MDB 作为数据库后端，然后选择No 在清楚slapd 时删除数据库．最后选择Yes 以移动旧数据库．
 
