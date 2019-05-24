@@ -381,9 +381,404 @@ diff slapd.conf.backup slapd.conf
 + 日志及缓存配置优化
     ```conf
     loglevel    296
+    # 日志级别
     cachesize   1000
+    # 缓存的记录数
     chechpoint  2048    10
+    # 文件达到2048K，或者每十分钟进行回写
     ```
 
++ 授权及安全参数配置
+
+  参考[官方文档](http://www.openldap.org/doc/admin24/access-control.html)
+
+#### 配置syslog记录LDAP日志
+
+配置 rsyslog 记录LDAP 服务日志，默认级别为256:
+
++ 备份 rsyslog 配置文件
+
+  ```bash
+  cp /etc/rsyslog.conf /etc/rsyslog.conf.backup
+  ```
+
++ 使用 echo 命令添加配置至配置文件
+
+  ```bash
+  echo "#record ldap.log by oldboy 2012-03-01" >> /etc/rsyslog.conf
+  echo "local4.* 		var/log/ldap.log" >> /etc/rsyslog.conf
+  ```
+
++ 查看 配置文件修改情况
+
+  ```bash
+  tail -1 /etc/rsyslog.conf
+  ```
+
++ 重启 rsyslog 
+
+  ```bash
+  /etc/init.d/rsyslog restart
+  ```
+
+  
+
+#### 配置数据目录
+
+```bash
+cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
+```
+
+CentOS 5.8 的系统下，上述DB_CONFIG.example 文件在`/etc/openldap` 下，6.4 的在上述命令路径下．
+
+**修改文件权限**：
+
+```bash
+chown ldap:ldap /var/lib/ldap/DB_CONFIG
+chmod 700 /var/lib/ldap
+ls -l /var/lib/ldap
+```
+
+#### 测试
+
+执行 `slaptest -u` 命令，如出现配置文件测试成功，则为配置完成．
+
+#### 启动
+
+```bash
+/etc/init.d/slapd restart
+```
+
+完成以上命令后，检查是否启动成功：
+
+```bash
+lsof -i :389
+ps -ef | grep ldap | grep -v grep
+```
+
+**开机自启动**
+
+```bash
+chkconfig slapd on
+```
+
+检查是否配置成功：
+
+```bash
+chkconfig --list slapd
+```
 
 
+
+#### 查询测试
+
+执行以下命令，进行查询测试：
+
+```bash
+ldapsearch -LLL -W -x -H ldap://test.com -D "cn=admin,dc=test,dc=com" -b 'dc=test,dc=com' "(uid=*)"
+```
+
+首次执行出现没有项目提示为运行正常，如出现错误，请尝试以下解决方案：
+
+解决 LDAP 2.3 和 2.4 的配置问题：
+
+```bash
+rm -rf /etc/openldap/slapd.d/*
+slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d
+chown -R ldap:ldap /etc/openldap/slapd.d/
+/etc/init.d/slapd restart
+lsof -i :389
+```
+
+### 添加数据的方式
+
++ 根据 LDAP 数据文件格式编写并导入数据
+
+  **注**：此种方式理解比较复杂，但是操作简单．
+
++ 根据系统用户及 LDAP 自带的脚本来初始化数据
+
+  添加测试用户 `test`，配置用户登录环境
+
+  ```
+  groupadd -g 5000 test
+  useradd -u 5001 -g 5000 test
+  ```
+
+  创建根项，并使用 openldap-servers 自带的脚本生成和导入 passwd/group 配置：
+
+  ```bash
+  grep test /etc/passwd >> passwd.in
+  grep test /etc/group > group.in
+  ```
+
++ 通过 LDAP 客户端工具进行初始化数据
+
+  适合初学者学习掌握．参考**LDAP 可视化管理**．
+
++ 已有数据进行导入
+
+  ```
+  ldapadd -x -H ldap://test.com -D "cn=admin,dc=test,dc=com" -W -f filename.ldif 
+  ```
+
+  -H：链接地址
+
+  -D: DN
+
+  -f：文件名称
+
+  -w：携带密码，不用交互输入
+
+#### LDAP 可视化管理
+
+LDAP 的客户端接口有很多，有B/S的，也有C/S的，此示例为B/S结构的 LDAP-account-manager：
+
+```bash
+yun install httpd php php-ldap php-gd -y
+```
+
+完成以上安装步骤后，执行以下命令检查安装文件：
+
+```bash
+rpm -qa httpd php php-ldap php-gd
+```
+
+**下载**
+
+前往[ldap-account-manager](https://www.ldap-account-manager.org/lamcms),目前较为稳定的为 3.7 版本，所以此示例使用的为 3.7 版．
+
+下载完成之后，将安装文件上传之服务器`/var/www/html`下．并解压．
+
+**配置**
+
+进入 `/var/www/html` 目录下：
+
+```bash
+cd ldap-accound-manager/config
+# 备份原有配置文件
+cp config.cfg_sample config.cfg
+cp lam.conf_sample lam.conf
+# 修改配置
+sed -i 's#cn=Manager#cn=admin#g' lam.conf
+sed -i 's#dc=my-domain#dc=domain#g' lam.conf
+sed -i 's#dc=com#dc=com#g' lam.conf
+chown -R apache:apache /var/www/html/ldap-accound-manager
+```
+
+
+
+## 配置应用使用 LDAP 身份验证
+
+### 前提
+
++ LDAP 服务端需要有用户
++ 更改 saslauthd 的下配置的 MECH=ldap
++ 创建 saslauthd 的配置文件，添加 LDAP 配置信息 
+
+### 配置 svn+sasl 用过 LDAP 身份验证
+
++ 安转 svn 并配置
+
++ 启用 svn 服务器的 sasl 验证机制
+
+  SASL 全称简单的身份验证和安全层（Simple Authentication and Security Layer），是一种用来扩充 C/S 模式验证能力的机制．
+
+  SASL 是一个胶和(gule)库，通过这个库把应用层，与形式多样的认证系统整合在一起．有点类似与 PAM ，当时后人是认证方式，决定什么人可以访问什么服务，而 SASL 是认证过程，侧重与信任建立过程，这个过程可以调用 PAM 来建立信任关系．在这里 Memcached 就是上面提到的应用层，具体的认证过程交给 SASL 库完成．
+
+  默认情况下，Red Hat Enterprise Linux 安装程序会自动安装 Cyrus-SASL 认证包．可使用以下命令测试系统是否已经安装了 Cyrus-SASL 认证包：
+
+  ```bash
+  rpm -qa | grep sasl
+  ```
+
+  如有输出则表示以安装，但为了确保安装完整，需要再次执行安装命令：
+
+  ```bash
+  yum install *sasl* -y
+  ```
+
+  查看可认证列表：
+
+  ```bash
+  saslauthd -v
+  ```
+
+  输出中有 ldap 即完成．
+
++ 查找调整认证机制文件
+
+  ```bash
+  grep -i mech /etc/sysconfig/saslauthd
+  ```
+
++ 替换认证方式，使用本地 shadow 认证
+
+  ```bash
+  sed -i 's#MECH=pam#MECH=shadow#g' /etc/sysconfig/saslauthd
+  ```
+
+  修改完成使用以下命令检查文件是否修改完成：
+
+  ```bash
+  grep -i mech /etc/sysconfig/saslauthd
+  ```
+
++ 重启 sasl
+
+  ```bash
+  /etc/init.d/saslauthd restart
+  ```
+
++ 测试本地认证
+
+  ```bash
+  testsaslauthd -u username -p password
+  ```
+
+  输出 `OK Success`即为成功．如出现`No "authentication failed"`，请检查当前系统是否存在用户．
+
++ 修改使用 LDAP 认证
+
+  使用 `man` 命令查看 saslauthd 配置说明：
+
+  ```bash
+  man saslauthd
+  ```
+
+  搜索 LDAP 关键词，查看关于配置 LDAP 方式说明．
+
+  然后使用 `sed` 命令再次替换其中的认证方式:
+
+  ```
+  sed -i 's#MECH=shadow#MECH=ldap#g' /etc/sysconfig/saslauthd
+  ```
+
+  通过`grep -i mech /etc/sysconfig/saslauthd`命令再次检查修改情况．之后重启服务．
+
+  ```bash
+  /etc/init.d/saslauthd restart
+  ```
+
+  由于 saslauthd.conf 文件默认隐藏，需要自己创建`vim /etc/saslauthd.conf`:
+
+  ```conf
+  # saslauthd.conf
+  ldap_servers: ldap://domain.com # 最好使用域名
+  ldap_bind_dc: cn=admin,dc=domain,dc=com # 管理员dn,注意替换域名
+  ldap_bind_pw: passwd # 管理员密码
+  ldap_search_base: ou=People,dc=domain,dc=com
+  ldap_filter:uid=%U
+  ldap_password_attr: userPassword
+  ```
+
+  编辑完成之后退出保存，并使用 `testsaslauthd` 测试认证：
+
+  ```bash
+  testsaslauthd -u ｕsername -p password
+  ```
+
+  出现 `OK "Success."`即为成功．
+
++ 安装SVN
+
++ 配置SVN 通过 LDAP 认证
+
+  创建 `/etc/sasl2/svn.conf` 文件，填写以下内容：
+
+  ```
+  pwcheck_method: saslauthd
+  mech_list: PLAIN LOGIN
+  ```
+
+  修改svn配置文件`svnserve.conf` :
+
+  ```bash
+  sed -i 's@# use-sasl = true@use-sasl = true@g' svnserve.conf
+  ```
+
+  关闭svn（pkill svnserve） ，使用以下命令进行重启：
+
+  ```bash
+  svnserve -d -r /path/to/svndata
+  ```
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
