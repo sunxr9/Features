@@ -42,7 +42,7 @@ DROP DATABASE <database_name>
 
 ##### 使用drop从索引中删除series
 
-`ROP SERIES`删除一个数据库里的一个series的所有数据，并且从索引中删除series。
+`DROP SERIES`删除一个数据库里的一个series的所有数据，并且从索引中删除series。
 
 > `DROP SERIES`不支持`WHERE`中带时间间隔。
 
@@ -1604,7 +1604,7 @@ SHOW MEASUREMENTS [ON <database_name>] [WITH MEASUREMENT <regular_expression>] [
 ##### 1. 运行带ON
 
 ```
-show measurements
+show measurements on DATABASE
 ```
 
 ##### 2. 运行不带ON

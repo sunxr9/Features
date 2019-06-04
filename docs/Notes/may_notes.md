@@ -2,7 +2,10 @@
 
 CentOS删除Python后无法使用yum，需要重新安装Python．进行环境修复．
 
-如果在不能使用后，通过编译安装Python环境，需要清理干净．
+#linux vim 查找快捷键：？decode
+if query is not None:
+    query = query.decode(errors='replace')
+return query如果在不能使用后，通过编译安装Python环境，需要清理干净．
 
 首先进行测试，确认系统环境中的Python环境损坏程度：
 
@@ -304,4 +307,189 @@ sudo dpkg-reconfigure slapd
 ##### 190524
 
 安装 sasl 认证层，协助 ldap 认证．
+
+
+
+##### 190527
+
+
+
+gitlab root 重置密码：
+
++ 进入GitLab 服务后台，执行`gitlab-rails console producation`.
+
++ 获取root 用户信息 `user = User.where(id: 1).first
+
++ 修改密码以及确认密码：
+
+  ```
+  user.password=new_password
+  user.password_confirmation=confirmation_password
+  ```
+
++ 保存修改，注意最后有个**感叹号**，`user.save!`．
+
+
+
+gitlab 配置LDAP 认证：
+
++ 进入后台，编辑GitLab 配置文件`/etc/gitlab/gitlab.rb`．
+
++ 找到 `gitlab_rails['ldap_enabled'] = false`，将其修改为`ture`．
+
++ 在上述配置行的下方，根据提示放开部分配置行的注释，并将以下内容填写至文件中：
+
+  ```yaml
+  gitlab_rails['ldap_servers'] = YAML.load <<- 'EOS'
+    main: 
+      label: 'LDAP'
+      host: '192.168.3.52' # 搭建的LDAP 服务器地址
+      port: 389 # LDAP 默认开放端口为389，如果启动https 端口为689
+      bind_cn: 'cn=admin,dc=domain,dc=com' # Gitlab 链接LDAP 服务的用户，不一定需要管理员权限，但是一定要有读取权限．dc是最初安装的时候设置的域名．
+  	pwssword: *****
+  	base: 'ou=People,dc=domain,dc=com' # 用户搜索的开始基点，
+  ```
+
++ 重新配置GitLab，`sudo gitlab-ctl reconfigure`
+
++ 测试是否可以正常获取用户列表，`sudo gitlab-rake gitlab:ldap:check`
+
++ 重启GitLab，并测试登录．
+
+
+
+##### 190528
+
+Django 出现于 Pymysql 版本冲突，无法进行迁移等操作，详细错误提示如下：
+
+```
+django.core.exceptions.ImproperlyConfigured: mysqlclient 1.3.13 or newer is required; you have 0.9.3
+```
+
++ 一种比较简单的方式就是将 Django 版本降低即可，最好降低一个大版本，使用 2.1 的 django.
+
++ 第二中需要修改源码：
+
+  1. 使用 `pip show` 命令找到 Django 源码位置：`pip show django`．
+
+  2. 编辑 `path/to/django/db/backends/mysql/base.py`: 注释掉以下两行（报错码）
+
+     ```python
+     if version < (1, 3, 13):
+         raise ImproperlyConfigured('mysqlclient 1.3.13 or newer is required; you have %s.' % Database.__version__)
+     ```
+
+  3. 完成上述步骤之后在执行迁移命令测试，如正常即可迁移完成，同时也可能出现另一个错误：
+
+     ```
+     AttributeError: 'str' object has no attribute 'decode'
+     ```
+
+     这个错误同样需要修改源码．
+
+  4. 编辑 `path/to/django/db/backends/mysql/operations.py` 将此文件中的以下部分修改：
+
+     ```python
+     # operations.py
+     #linux vim 查找快捷键：/decode
+     if query is not None:
+         query = query.decode(errors='replace')
+     return query
+     ```
+
+     将上述的`decode` 修改为 `encode`:
+
+     ```python
+     if query is not None:
+         query = query.encode(errors='replace')
+     return query
+     ```
+
+     完成之后再次执行就可以了．
+
+
+
+MarkDown 文档转化为 Html 展示，本次展示以在个人博客中的应用，使用的框架为 Python Django(2.1) 框架，实现步骤如下：
+
+使用 `pip`安装 Markdown 模块：`pip install markdown`．
+
+在 View 试图中导入 Markdown 模块以及博客中的 文章存储模型：
+
+```python
+from .models import Blog
+import markdown
+
+def detail(request, id):
+    '''博客详情展示, 根据id读取'''
+    blog = Blog.objects.filter(id=int(id)).first()
+    blog.content = markdown.markdown(blog.content,
+                                     extensions=[
+                                      'markdown.extensions.extra',
+                                      'markdown.extensions.codehilite',
+                                      'markdown.extensions.toc',
+                                  ],
+                                  safe_mode=True,
+                                  enable_attributes=False)
+    
+    return render(request, 'blogmd.html', context={'blog': blog})
+```
+
+以上就实现了博客文章的内容转化为 Html 格式．其中 markdown 模块的 **extensions** 参数主要为以下作用：
+
++ markdown.extensions.extra 本身包含很多扩展
++ markdown.extensions.codehilite 是语法高亮，后面插入代码会用到
++ markdown.extensions.toc 是自动生成目录
+
+完成了格式的转化就可以使用了，但是还有个缺陷，就是代码的高亮显示．
+
+代码的高亮显示需要独立的控件 `Pygments` 进行实现，同样使用 `pip` 进行安装：`pip install pygments`.
+
+接着在你的项目静态文件目录下执行以下命令，生成代码高亮需要用到的 css 样式文件：
+
+```sh
+pygmentize -S default -f html -a .codehilite > code.css
+```
+
+最后在模板文件中导入这个文件就可以了．最好在从新启动一下服务．
+
+##### 190529
+
+安装 nodejs:
+```bash
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -　
+```
+
+```bash
+sudo apt install nodejs
+```
+
+
+
+Run `sudo apt-get install -y nodejs` to install Node.js 10.x and npm
+
+You may also need development tools to build native addons:
+
+     sudo apt-get install gcc g++ make
+To install the Yarn package manager, run:
+
+     curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+    
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+    
+    sudo apt-get update && sudo apt-get install yarn
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

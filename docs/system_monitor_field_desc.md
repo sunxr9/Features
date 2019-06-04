@@ -27,6 +27,18 @@
 | GPU * mem-free  | GPU内存未使用空间 | GB     |
 | GPU * freq      | GPU当前运行主频   | GHz    |
 | GPU * load      | GPU负载           | GHz    |
-|                 |                   |        |
-|                 |                   |        |
+
+**NET**
+
+| 名称         | 说明                 |      |
+| ------------ | -------------------- | ---- |
+| bytes_sent   | 发送的字节数         |      |
+| bytes_recv   | 接收的字节数         |      |
+| packets_sent | 发送的包数           |      |
+| packets_recv | 接收的包数           |      |
+| errin        | 接收时的错误总数     |      |
+| errout       | 发送时的错误总数     |      |
+| dropin       | 丢弃的传入数据包总数 |      |
+| dropout      | 丢弃的传出数据包总数 |      |
+|              |                      |      |
 
