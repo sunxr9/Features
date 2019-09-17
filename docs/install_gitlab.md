@@ -37,7 +37,7 @@ sudo EXTERNAL_URL='http://192.168.3.51' apt-get install gitlab-ce
 
 
 
-#### gitlab 安装出现以下错误， 解决方法， 设置ubuntu de 语言
+#### gitlab 安装出现以下错误， 解决方法， 设置ubuntu 的语言
 
 > ```
 > Running handlers:
